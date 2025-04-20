@@ -65,6 +65,8 @@ package-lock.json
 *.key
 *.crt
 
+UI-design.kra
+
 # Agent Config Files (if sensitive, like hardcoded credentials)
 configs/agent-config.yaml
 
