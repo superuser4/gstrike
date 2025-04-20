@@ -32,6 +32,7 @@ func RegisterAgentHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(agent)
 }
 
+// pulls agent tasks from the global Tasks hashmap using agent ID
 func GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 	agentID := mux.Vars(r)["agentID"]
 
@@ -39,18 +40,23 @@ func GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 	defer util.Mutex.Unlock()
 
 	agentTasks := util.Tasks[agentID]
+	// TESTING
 	exampleTask := util.Task{
 		ID:      "task-01",
 		Command: "whoami",
 	}
 	agentTasks = append(agentTasks, exampleTask)
+	//*
+
+	// clear task queue for agent
 	util.Tasks[agentID] = []util.Task{}
 
-	log.Printf("[>] Agent %s pulled %d task(s)", agentID, len(agentTasks))
+	log.Printf("[>] Agent (%s) pulled (%d) task(s)", agentID, len(agentTasks))
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(agentTasks)
 }
 
+// for the operators to queue tasks to agents
 func PostTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var task struct {
 		AgentID string `json:"agent_id"`
@@ -75,10 +81,9 @@ func PostTaskHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostResultHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("HEREEEEEEEEEEEE\n")
 	var result util.Result
-	fmt.Println("HERE")
 	err := json.NewDecoder(r.Body).Decode(&result)
-	fmt.Println("RESULT: ", result)
 
 	if err != nil {
 		http.Error(w, "Invalid result", http.StatusBadRequest)
