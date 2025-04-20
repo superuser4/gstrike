@@ -63,6 +63,7 @@ package-lock.json
 # SSH Keys (for security)
 *.pem
 *.key
+*.crt
 
 # Agent Config Files (if sensitive, like hardcoded credentials)
 configs/agent-config.yaml
