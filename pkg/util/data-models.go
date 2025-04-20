@@ -6,10 +6,10 @@ import (
 )
 
 var (
-	agents  = make(map[string]Agent)
-	tasks   = make(map[string][]Task)
-	results = make([]Result, 0)
-	mutex   sync.Mutex
+	Agents  = make(map[string]Agent)
+	Tasks   = make(map[string][]Task)
+	Results = make([]Result, 0)
+	Mutex   sync.Mutex
 )
 
 type Agent struct {

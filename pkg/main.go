@@ -15,12 +15,12 @@ import (
 func main() {
 	r := mux.NewRouter()
 
-	r.HandleFunc("/register", routers.registerAgentHandler).Methods("POST")
+	r.HandleFunc("/register", router.registerAgentHandler).Methods("POST")
 
 	r.HandleFunc("/tasks/{agentID}", routers.getTasksHandler).Methods("GET")
-	r.HandleFunc("/tasks", routers.postTaskHandler).Methods("POST")
+	r.HandleFunc("/tasks", router.postTaskHandler).Methods("POST")
 
-	r.HandleFunc("/results", routers.postResultHandler).Methods("POST")
+	r.HandleFunc("/results", router.postResultHandler).Methods("POST")
 	//r.HandleFunc("/results", getResultHandler).Methods("GET")
 
 	tlsConfig := &tls.Config{
