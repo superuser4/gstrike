@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/tls"
+	"gobricked/pkg/router"
 	"log"
 	"net/http"
 
@@ -15,13 +16,13 @@ import (
 func main() {
 	r := mux.NewRouter()
 
-	r.HandleFunc("/register", router.registerAgentHandler).Methods("POST")
+	r.HandleFunc("/register", router.RegisterAgentHandler).Methods("POST")
 
-	r.HandleFunc("/tasks/{agentID}", routers.getTasksHandler).Methods("GET")
-	r.HandleFunc("/tasks", router.postTaskHandler).Methods("POST")
+	r.HandleFunc("/tasks/{agentID}", router.GetTasksHandler).Methods("GET")
+	r.HandleFunc("/tasks", router.PostTaskHandler).Methods("POST")
 
-	r.HandleFunc("/results", router.postResultHandler).Methods("POST")
-	//r.HandleFunc("/results", getResultHandler).Methods("GET")
+	r.HandleFunc("/results", router.PostResultHandler).Methods("POST")
+	r.HandleFunc("/results", router.GetResultHandler).Methods("GET")
 
 	tlsConfig := &tls.Config{
 		MinVersion: tls.VersionTLS12,

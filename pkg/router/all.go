@@ -12,7 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func registerAgentHandler(w http.ResponseWriter, r *http.Request) {
+func RegisterAgentHandler(w http.ResponseWriter, r *http.Request) {
 	var agent util.Agent
 	if err := json.NewDecoder(r.Body).Decode(&agent); err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
@@ -32,7 +32,7 @@ func registerAgentHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(agent)
 }
 
-func getTasksHandler(w http.ResponseWriter, r *http.Request) {
+func GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 	agentID := mux.Vars(r)["agentID"]
 
 	util.Mutex.Lock()
@@ -51,7 +51,7 @@ func getTasksHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(agentTasks)
 }
 
-func postTaskHandler(w http.ResponseWriter, r *http.Request) {
+func PostTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var task struct {
 		AgentID string `json:"agent_id"`
 		Command string `json:"command"`
@@ -74,7 +74,7 @@ func postTaskHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func postResultHandler(w http.ResponseWriter, r *http.Request) {
+func PostResultHandler(w http.ResponseWriter, r *http.Request) {
 	var result util.Result
 	fmt.Println("HERE")
 	err := json.NewDecoder(r.Body).Decode(&result)
@@ -93,6 +93,6 @@ func postResultHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func getResultHandler(w http.ResponseWriter, r *http.Request) {
+func GetResultHandler(w http.ResponseWriter, r *http.Request) {
 
 }
