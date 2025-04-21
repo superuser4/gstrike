@@ -5,6 +5,8 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
+
+
 void https_post(const char *ip, const char *port, const char *endpoint, const char *payload, char *response_out, size_t response_out_len) {
     SSL_library_init();
     SSL_load_error_strings();
@@ -45,6 +47,7 @@ void https_post(const char *ip, const char *port, const char *endpoint, const ch
         "%s",
         endpoint, ip, strlen(payload), payload);
 
+    
     SSL_write(ssl, request, strlen(request));
 
     if (response_out) {

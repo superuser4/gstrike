@@ -2,7 +2,6 @@ package router
 
 import (
 	"encoding/json"
-	"fmt"
 	"gobricked/pkg/util"
 	"log"
 	"net/http"
@@ -81,11 +80,11 @@ func PostTaskHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostResultHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("HEREEEEEEEEEEEE\n")
 	var result util.Result
 	err := json.NewDecoder(r.Body).Decode(&result)
 
 	if err != nil {
+		log.Printf("Decode error: %v\n", err)
 		http.Error(w, "Invalid result", http.StatusBadRequest)
 		return
 	}
