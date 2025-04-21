@@ -31,8 +31,6 @@ void register_agent() {
 }
 
 void send_result(const char *task_id, char *output) {
-    //char escaped_output[sizeof(output)];
-    //escape_json_string(output, escaped_output, sizeof(output));
     if (output[strlen(output) - 1] == '\n') {
         output[strlen(output) - 1] = '\0';
     }    

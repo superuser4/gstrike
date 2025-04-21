@@ -2,6 +2,7 @@ package router
 
 import (
 	"encoding/json"
+	"fmt"
 	"gobricked/pkg/util"
 	"log"
 	"net/http"
@@ -12,14 +13,8 @@ import (
 )
 
 func RegisterAgentHandler(w http.ResponseWriter, r *http.Request) {
-	body, ok := util.VerifyHMAC(r)
-	if !ok {
-		http.Error(w, "Unauthorized (HMAC failed)", http.StatusUnauthorized)
-		return
-	}
-
 	var agent util.Agent
-	if err := json.Unmarshal(body, &agent); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&agent); err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
@@ -87,18 +82,15 @@ func PostTaskHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostResultHandler(w http.ResponseWriter, r *http.Request) {
-	body, ok := util.VerifyHMAC(r)
-	if !ok {
-		http.Error(w, "Unauthorized (HMAC failed)", http.StatusUnauthorized)
-		return
-	}
-
 	var result util.Result
-	if err := json.Unmarshal(body, &result); err != nil {
+	err := json.NewDecoder(r.Body).Decode(&result)
+
+	if err != nil {
 		log.Printf("Decode error: %v\n", err)
 		http.Error(w, "Invalid result", http.StatusBadRequest)
 		return
 	}
+	fmt.Println(result)
 
 	util.Mutex.Lock()
 	defer util.Mutex.Unlock()
