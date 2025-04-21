@@ -6,10 +6,11 @@ import (
 )
 
 var (
-	Agents  = make(map[string]Agent)
-	Tasks   = make(map[string][]Task)
-	Results = make([]Result, 0)
-	Mutex   sync.Mutex
+	Agents       = make(map[string]Agent)
+	Tasks        = make(map[string][]Task)
+	Results      = make([]Result, 0)
+	Mutex        sync.Mutex
+	SharedSecret = "378432999013382759857861340953603067"
 )
 
 type Agent struct {

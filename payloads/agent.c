@@ -5,10 +5,13 @@
 #include <netdb.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include <openssl/hmac.h>
+#include <openssl/evp.h>
 #include "./reqs.h"
 
 #define SERVER "127.0.0.1"
 #define PORT "443"
+
 #define REGISTER_ENDPOINT "/register"
 #define TASKS_ENDPOINT "/tasks/"
 #define RESULTS_ENDPOINT "/results"
@@ -26,7 +29,6 @@ void register_agent() {
         printf("[+] Registered. Agent ID: %s\n", agent_id);
     }
 }
-
 
 void send_result(const char *task_id, char *output) {
     //char escaped_output[sizeof(output)];

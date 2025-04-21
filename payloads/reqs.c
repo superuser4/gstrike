@@ -6,6 +6,18 @@
 #include <openssl/err.h>
 
 
+void compute_hmac(const char *key, const char *data, char *out_hex, size_t out_len) {
+    unsigned char *digest;
+    unsigned int digest_len;
+
+    digest = HMAC(EVP_sha256(), key, strlen(key), (unsigned char *)data, strlen(data), NULL, &digest_len);
+
+    // Convert to hex
+    for (unsigned int i = 0; i < digest_len && i * 2 + 1 < out_len; ++i) {
+        sprintf(&out_hex[i * 2], "%02x", digest[i]);
+    }
+    out_hex[digest_len * 2] = '\0';
+}
 
 void https_post(const char *ip, const char *port, const char *endpoint, const char *payload, char *response_out, size_t response_out_len) {
     SSL_library_init();
@@ -37,15 +49,20 @@ void https_post(const char *ip, const char *port, const char *endpoint, const ch
         return;
     }
 
-    char request[2048];
+    const char sharedSecret[] = "378432999013382759857861340953603067";
+    char hmac_hex[65];
+    compute_hmac(sharedSecret, payload, hmac_hex, sizeof(hmac_hex));
+
+    char request[4096];
     snprintf(request, sizeof(request),
         "POST %s HTTP/1.1\r\n"
         "Host: %s\r\n"
         "Content-Type: application/json\r\n"
         "Content-Length: %zu\r\n"
+        "X-Agent-Signature: %s\r\n"
         "Connection: close\r\n\r\n"
         "%s",
-        endpoint, ip, strlen(payload), payload);
+        endpoint, ip, strlen(payload), hmac_hex, payload);
 
     
     SSL_write(ssl, request, strlen(request));
