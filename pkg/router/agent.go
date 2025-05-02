@@ -48,7 +48,7 @@ func PostResultHandler(w http.ResponseWriter, r *http.Request) {
 	defer util.Mutex.Unlock()
 
 	util.Results = append(util.Results, result)
-	log.Printf("[✓] Received result for task (%s) from agent (%s) > %s", result.TaskID, result.AgentID, result.Output)
+	//log.Printf("[✓] Received result for task (%s) from agent (%s) > %s", result.TaskID, result.AgentID, result.Output)
 	w.WriteHeader(http.StatusCreated)
 }
 
@@ -59,15 +59,6 @@ func GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 	defer util.Mutex.Unlock()
 
 	agentTasks := util.Tasks[agentID]
-	// TESTING
-	exampleTask := util.Task{
-		ID:      "task-01",
-		Command: "id",
-	}
-	agentTasks = append(agentTasks, exampleTask)
-	//*
-
-	// clear task queue for agent
 	util.Tasks[agentID] = []util.Task{}
 
 	log.Printf("[>] Agent (%s) pulled (%d) task(s)", agentID, len(agentTasks))

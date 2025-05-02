@@ -8,13 +8,7 @@
 #include <openssl/hmac.h>
 #include <openssl/evp.h>
 #include "./reqs.h"
-
-#define SERVER "127.0.0.1"
-#define PORT "443"
-
-#define REGISTER_ENDPOINT "/register"
-#define TASKS_ENDPOINT "/tasks/"
-#define RESULTS_ENDPOINT "/results"
+#include "global.h"
 
 char agent_id[64] = {0};
 

@@ -32,7 +32,3 @@ func PostTaskHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("[*] Added task %s to agent %s", newTask.ID, task.AgentID)
 	w.WriteHeader(http.StatusCreated)
 }
-
-func GetResultHandler(w http.ResponseWriter, r *http.Request) {
-
-}

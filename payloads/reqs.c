@@ -4,7 +4,7 @@
 #include <arpa/inet.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-
+#include "global.h"
 
 void compute_hmac(const char *key, const char *data, char *out_hex, size_t out_len) {
     unsigned char digest[EVP_MAX_MD_SIZE];
@@ -51,9 +51,9 @@ void https_post(const char *ip, const char *port, const char *endpoint, const ch
         SSL_CTX_free(ctx);
         return;
     }
-    const char sharedSecret[] = "378432999013382759857861340953603067";
+
     char hmac_hex[65];
-    compute_hmac(sharedSecret, payload, hmac_hex, sizeof(hmac_hex));
+    compute_hmac(SHARED_SECRET, payload, hmac_hex, sizeof(hmac_hex));
 
     char request[4096];
     snprintf(request, sizeof(request),
@@ -116,10 +116,9 @@ void https_get(const char *ip, const char *port, const char *endpoint, char *res
     }
 
     // HMAC part
-    const char sharedSecret[] = "378432999013382759857861340953603067";
-    const char payload[] = ""; // GET = empty payload (unless you want to use the path)
+    const char payload[] = "";
     char hmac_hex[65];
-    compute_hmac(sharedSecret, payload, hmac_hex, sizeof(hmac_hex));
+    compute_hmac(SHARED_SECRET, payload, hmac_hex, sizeof(hmac_hex));
 
     char request[1024];
     snprintf(request, sizeof(request),
