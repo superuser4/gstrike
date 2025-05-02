@@ -39,7 +39,7 @@ func main() {
 		TLSConfig: tlsConfig,
 	}
 
-	log.Println("[*] Gobricked C2 server listening on https://localhost:443")
+	log.Println("[*] Gstrike C2 server listening on https://localhost:443")
 	err := server.ListenAndServeTLS("server.crt", "server.key")
 	if err != nil {
 		log.Fatal(err)

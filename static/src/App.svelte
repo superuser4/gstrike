@@ -46,24 +46,22 @@
 
 <main class="container">
   <div class="navbar">
-    <div class="logo">Gobricked Web UI</div>
+    <div class="logo">Gstrike Web UI</div>
     <div>
       <a href="/">Home</a>
     </div>
   </div>
 
-  <div class="main-content">
-    <h1>Send Commands to Agent</h1>
+  <div class="web-shell">
 
-    <!-- Input for command with 'Enter' key handling -->
     <input 
-      bind:value={myMsg} 
-      placeholder="Type command here..." 
+      bind:value={myMsg}
+      placeholder="send commands to beacon" 
       on:keydown={handleKeydown} 
     />
 
     {#if srvMsg}
-      <p><strong>Response from Server:</strong> {srvMsg}</p>
+      <p><strong>Response from Beacon:</strong> {srvMsg}</p>
     {/if}
 
     {#if errorMessage}

@@ -55,9 +55,8 @@ body {
   font-weight: bold;
 }
 
-/* Content styling */
-.main-content {
-  margin-top: 60px; /* space for fixed navbar */
+.web-shell {
+  margin-top: 800px;
   padding: 20px;
   background-color: #fff;
   border-radius: 8px;

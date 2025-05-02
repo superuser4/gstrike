@@ -1,5 +1,5 @@
-# Gobricked
-Gobricked is a Command and Control server and a modular post exploitation framework, it is possible to add/customize commands for agents.
+# Gstrike
+Gstrike is a Command and Control server, uses HTTPS and short polling for beacon communication.
 # Used Languages/Libraries
 - Golang
 - C
