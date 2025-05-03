@@ -3,7 +3,6 @@ package router
 import (
 	"encoding/json"
 	"gobricked/pkg/util"
-	"log"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -29,6 +28,6 @@ func PostTaskHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	util.Tasks[task.AgentID] = append(util.Tasks[task.AgentID], newTask)
 
-	log.Printf("[*] Added task %s to agent %s", newTask.ID, task.AgentID)
+	//log.Printf("[*] Added task %s to agent %s", newTask.ID, task.AgentID)
 	w.WriteHeader(http.StatusCreated)
 }

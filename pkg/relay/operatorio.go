@@ -22,17 +22,13 @@ func HandleWebSocketIO(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
-	log.Println("New WebSocket connection established")
-
 	for {
 		messageType, p, err := conn.ReadMessage()
 		if err != nil {
 			log.Println("Error reading message:", err)
 			return
 		}
-		log.Printf("Received command from client: %s", string(p))
 
-		// Execute command (simulate with a response for now)
 		result := fmt.Sprintf("Executed command: %s", string(p))
 
 		if err := conn.WriteMessage(messageType, []byte(result)); err != nil {
