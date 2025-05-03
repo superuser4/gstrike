@@ -12,5 +12,8 @@
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "svelte": "^5.23.1",
     "vite": "^6.3.1"
+  },
+  "dependencies": {
+    "@xterm/xterm": "^5.5.0"
   }
 }
