@@ -2,13 +2,20 @@
   import { onMount } from 'svelte';
   import { Terminal } from '@xterm/xterm';
   import '@xterm/xterm/css/xterm.css';
+    import { parse } from 'svelte/compiler';
 
   let terminalDiv;
   let term;
+  
   let ws;
   let isConnected = false;
+  
   let errorMessage = "";
   let inputBuffer = '';
+  let serverMessage = "";
+
+  let chosenAgentID = "";
+  let allAgentId = [];
 
   onMount(() => {
     term = new Terminal({
@@ -28,7 +35,7 @@
     });
 
     term.open(terminalDiv);
-    term.write('$ ');
+    term.write('GStrike > ');
 
     ws = new WebSocket("wss://localhost/ws");
 
@@ -36,36 +43,51 @@
       isConnected = true;
     };
 
+
+    // handle server websocket messages
     ws.onmessage = (event) => {
+      console.log(event.data);
       term.write('\r\x1b[K');  // Clear current line
-      term.write(`\r\n${event.data}\r\n`);
-      term.write('$ ');
-      term.write(inputBuffer);  // Restore current input
+      let parsed = JSON.parse(event.data);
+      let type = parsed["type"];
+
+      if (type == "beacon_callback") {
+        term.write(`\r\n${event.data}\r\n\n`);
+        term.write('GStrike > ');
+        term.write(inputBuffer);  // Restore current input
+      } else if (type == "beacon_register") {
+        allAgentId.push(parsed["agentID"]);
+      }
     };
 
+    // cleanup / error
     ws.onerror = () => {
       errorMessage = "Error connecting to the WebSocket server.";
       isConnected = false;
     };
-
     ws.onclose = () => {
       term.writeln("\r\nWebSocket connection closed.");
       isConnected = false;
     };
 
+    function taskCommand(command) {
+
+    }
+
     term.onData((data) => {
+      // send if EOL (Enter key)
       if (data === '\r') {
-        if (ws.readyState === WebSocket.OPEN) {
-          ws.send(inputBuffer);
-          term.write('\r\n');
-        }
+        taskCommand(inputBuffer);
+        term.write('\r\n');
         inputBuffer = '';
-        term.write('$ ');
+        term.write('GStrike > ');
+      // delete char
       } else if (data === '\u007F') {
         if (inputBuffer.length > 0) {
           inputBuffer = inputBuffer.slice(0, -1);
           term.write('\b \b');
         }
+        // type chars
       } else {
         inputBuffer += data;
         term.write(data);
@@ -85,5 +107,17 @@
     {#if errorMessage}
       <p style="color: red;">{errorMessage}</p>
     {/if}
+  </div>
+
+  <div class="left-card-list">
+    <ul>
+      {#if allAgentId.length === 0}
+         <p>No beacons registered yet..</p>
+      {:else}   
+        {#each allAgentId as agent}
+          <li>{agent}</li>
+        {/each}
+      {/if}
+    </ul>
   </div>
 </main>

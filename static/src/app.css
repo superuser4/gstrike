@@ -19,6 +19,37 @@ body {
   padding: 20px;
   align-items: center;
 }
+
+.left-card-list {
+  position: fixed;
+  margin-top: 60px;
+  top: 20px;
+  left: 20px;
+  width: 375px;
+  height: 800px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  z-index: 1000;
+}
+
+.left-card-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.left-card-list li {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.left-card-list li:last-child {
+  border-bottom: none;
+}
+
+
 .navbar {
   background-color: #333;
   color: #fff;

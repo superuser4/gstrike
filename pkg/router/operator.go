@@ -28,6 +28,5 @@ func PostTaskHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	util.Tasks[task.AgentID] = append(util.Tasks[task.AgentID], newTask)
 
-	//log.Printf("[*] Added task %s to agent %s", newTask.ID, task.AgentID)
 	w.WriteHeader(http.StatusCreated)
 }

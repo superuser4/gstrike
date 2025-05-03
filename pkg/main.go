@@ -27,7 +27,7 @@ func main() {
 	agentAPI.HandleFunc("/tasks/{agentID}", router.GetTasksHandler).Methods("GET")
 	agentAPI.HandleFunc("/results", router.PostResultHandler).Methods("POST")
 
-	r.HandleFunc("/ws", relay.HandleWebSocketIO)
+	r.HandleFunc("/ws", relay.WSHandler)
 
 	tlsConfig := &tls.Config{
 		MinVersion: tls.VersionTLS12,
