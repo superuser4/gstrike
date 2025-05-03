@@ -1,10 +1,11 @@
 # Gstrike
 Gstrike is a Command and Control server, uses HTTPS and short polling for beacon communication.
-# Used Languages/Libraries
+# Used Languages/Frameworks
 - Golang
 - C
+- HTML CSS JS
+- Svelte
 # About
-- Version: 0.0
 - UNDER CONSTRUCTION
 # Installation
 # Quick Usage
