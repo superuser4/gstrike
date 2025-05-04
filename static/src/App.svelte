@@ -14,7 +14,7 @@
   let inputBuffer = '';
   let serverMessage = "";
 
-  let chosenAgentID = "";
+  let chosenAgentID = "None";
   let allAgentId = [];
 
   onMount(() => {
@@ -46,17 +46,17 @@
 
     // handle server websocket messages
     ws.onmessage = (event) => {
-      console.log(event.data);
       term.write('\r\x1b[K');  // Clear current line
       let parsed = JSON.parse(event.data);
       let type = parsed["type"];
+
 
       if (type == "beacon_callback") {
         term.write(`\r\n${event.data}\r\n\n`);
         term.write('GStrike > ');
         term.write(inputBuffer);  // Restore current input
       } else if (type == "beacon_register") {
-        allAgentId.push(parsed["agentID"]);
+        allAgentId = [...allAgentId, parsed["agentID"]];
       }
     };
 
@@ -110,14 +110,18 @@
   </div>
 
   <div class="left-card-list">
-    <ul>
-      {#if allAgentId.length === 0}
-         <p>No beacons registered yet..</p>
-      {:else}   
-        {#each allAgentId as agent}
-          <li>{agent}</li>
-        {/each}
-      {/if}
+    <h3>
+      Beacon list
+    </h3>
+    <h4>Selected Beacon: {chosenAgentID}</h4>
+    <ul>  
+      {#each allAgentId as agent}
+        <li>
+          <button on:click={chosenAgentID = agent}>
+            {agent}
+          </button>
+        </li>
+      {/each}
     </ul>
   </div>
 </main>
