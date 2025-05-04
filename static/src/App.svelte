@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { Terminal } from '@xterm/xterm';
   import '@xterm/xterm/css/xterm.css';
-    import { parse } from 'svelte/compiler';
+  import { parse } from 'svelte/compiler';
 
   let terminalDiv;
   let term;
@@ -102,26 +102,29 @@
     <div><a href="/">Home</a></div>
   </div>
 
-  <div class="web-shell">
-    <div bind:this={terminalDiv} class="terminal-container"></div>
-    {#if errorMessage}
-      <p style="color: red;">{errorMessage}</p>
-    {/if}
-  </div>
-
-  <div class="left-card-list">
-    <h3>
-      Beacon list
-    </h3>
-    <h4>Selected Beacon: {chosenAgentID}</h4>
-    <ul>  
-      {#each allAgentId as agent}
-        <li>
-          <button on:click={chosenAgentID = agent}>
-            {agent}
-          </button>
-        </li>
-      {/each}
-    </ul>
+  <div class="layout">
+    <div class="web-card">
+      <div class="web-shell">
+        <div bind:this={terminalDiv} class="terminal-container"></div>
+        {#if errorMessage}
+          <p style="color: red;">{errorMessage}</p>
+        {/if}
+      </div>
+    </div>
+    <div class="left-card-list">
+      <h3>
+        Beacon list
+      </h3>
+      <h4>Selected Beacon: {chosenAgentID}</h4>
+      <ul>  
+        {#each allAgentId as agent}
+          <li>
+            <button class="beacon-button" on:click={chosenAgentID = agent}>
+              {agent}
+            </button>
+          </li>
+        {/each}
+      </ul>
+    </div>
   </div>
 </main>

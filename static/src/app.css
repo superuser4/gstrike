@@ -9,48 +9,11 @@
 body {
   background-color: #f4f4f4;
   color: #333;
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
-}
-.container {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  padding: 20px;
-  align-items: center;
+  padding-top: 60px; /* Space for navbar */
 }
 
-.left-card-list {
-  position: fixed;
-  margin-top: 60px;
-  top: 20px;
-  left: 20px;
-  width: 375px;
-  height: 800px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 16px;
-  z-index: 1000;
-}
-
-.left-card-list ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.left-card-list li {
-  padding: 10px 12px;
-  border-bottom: 1px solid #eee;
-}
-
-.left-card-list li:last-child {
-  border-bottom: none;
-}
-
-
+/* Navbar */
 .navbar {
   background-color: #333;
   color: #fff;
@@ -63,48 +26,122 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 .navbar a {
   color: #fff;
   text-decoration: none;
   margin: 0 15px;
-  font-size: 18px;
   transition: color 0.3s ease;
 }
+
 .navbar a:hover {
   color: #ff6347;
 }
-.navbar .logo {
-  font-size: 24px;
-  font-weight: bold;
+
+/* Left card list */
+.left-card-list {
+  position: fixed;
+  bottom: 40px;
+  left: 40px;
+  width: 375px;
+  height: calc(100vh - 140px);
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+  z-index: 1000;
+  padding: 20px; /* Added padding for internal spacing */
 }
-.web-shell {
-  margin-top: 120px;
+
+.left-card-list h3 {
+  margin: 0 0 15px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.left-card-list h4 {
+  margin: 0 0 20px 0;
+  color: #666;
+  font-weight: normal;
+}
+
+.left-card-list ul {
+  list-style: none;
   padding: 0;
-  background-color: #1e1e1e; /* Changed from #fff */  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  max-width: 1000px;
-  width: 100%;
-  height: 60vh;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0;
 }
-/* Terminal-specific styles */
+
+.left-card-list li {
+  margin-bottom: 10px;
+}
+
+/* Web card container */
+.web-card {
+  position: fixed;
+  bottom: 40px;
+  left: 455px;
+  width: calc(100% - 495px);
+  height: calc(100vh - 140px);
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  padding: 20px; /* Added padding for the card */
+}
+
+/* Web shell terminal */
+.web-shell {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Terminal styling */
 .terminal-container {
   width: 100% !important;
   height: 100% !important;
   padding: 0 !important;
   margin: 0 !important;
 }
+
 .xterm, .xterm-viewport, .xterm-screen, .xterm-rows {
   font-family: 'Consolas', 'Menlo', 'Courier New', monospace !important;
-  letter-spacing: 0 !important;
-  line-height: 1 !important;
-  overflow: hidden !important;
-  background-color: #1e1e1e !important; /* Match terminal background */
+  background-color: #1e1e1e !important;
+  height: 100% !important;
+  width: 100% !important;
+  padding: 15px !important;
 }
-.xterm-rows > div {
-  letter-spacing: 0 !important;
-  font-feature-settings: "liga" 0;
+
+/* Beacon button */
+.beacon-button {
+  background-color: #04AA6D;
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.beacon-button:hover {
+  background-color: #038a5a;
+}
+
+/* Error message styling */
+p[style*="color: red;"] {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: #ffebee;
+  padding: 8px 16px;
+  border-radius: 4px;
+  margin: 0;
 }
