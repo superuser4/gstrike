@@ -107,8 +107,8 @@
 
 <main class="container">
   <div class="navbar">
-    <div class="logo">Gstrike Web UI</div>
-    <div><a href="/">Home</a></div>
+    <div class="logo"><a href="/">GStrike Web UI</a></div>
+    <div><a href="/">Docs</a></div>
   </div>
 
   <div class="layout">
