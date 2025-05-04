@@ -5,7 +5,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
-	"gobricked/pkg/util"
+	"gstrike/pkg/util"
 	"io"
 	"net/http"
 )

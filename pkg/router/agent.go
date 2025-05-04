@@ -3,8 +3,8 @@ package router
 import (
 	"encoding/json"
 	"fmt"
-	"gobricked/pkg/relay"
-	"gobricked/pkg/util"
+	"gstrike/pkg/relay"
+	"gstrike/pkg/util"
 	"log"
 	"net/http"
 	"time"

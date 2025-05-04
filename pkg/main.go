@@ -2,9 +2,9 @@ package main
 
 import (
 	"crypto/tls"
-	"gobricked/pkg/middleware"
-	"gobricked/pkg/relay"
-	"gobricked/pkg/router"
+	"gstrike/pkg/middleware"
+	"gstrike/pkg/relay"
+	"gstrike/pkg/router"
 	"log"
 	"net/http"
 

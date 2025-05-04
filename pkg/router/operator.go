@@ -2,7 +2,7 @@ package router
 
 import (
 	"encoding/json"
-	"gobricked/pkg/util"
+	"gstrike/pkg/util"
 	"net/http"
 
 	"github.com/google/uuid"

@@ -116,11 +116,13 @@
     <h4>Selected Beacon: {chosenAgentID}</h4>
     <ul>  
       {#each allAgentId as agent}
-        <li>
-          <button on:click={chosenAgentID = agent}>
-            {agent}
-          </button>
-        </li>
+        <div class="beacon-button">
+          <li>
+            <button on:click={chosenAgentID = agent}>
+              {agent}
+            </button>
+          </li>
+        </div>
       {/each}
     </ul>
   </div>
