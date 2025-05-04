@@ -13,7 +13,7 @@ import (
 
 func main() {
 	r := mux.NewRouter()
-
+	// operator API --> insecure for now
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("static/dist/assets"))))
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "static/dist/index.html")

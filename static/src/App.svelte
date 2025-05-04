@@ -19,6 +19,8 @@
 
   onMount(() => {
     term = new Terminal({
+      cursorStyle: 'block',
+      cursorWidth: 8,
       fontFamily: "'Consolas', 'Menlo', 'Courier New', monospace",
       fontSize: 14,
       letterSpacing: 0,
@@ -33,10 +35,17 @@
       cursorBlink: true,
       allowProposedApi: true,
     });
+    
 
     term.open(terminalDiv);
     term.write('GStrike > ');
 
+    terminalDiv.addEventListener('mousedown', (e) => {
+      term.focus();
+    });
+
+    setTimeout(() => term.focus(), 100);
+    
     ws = new WebSocket("wss://localhost/ws");
 
     ws.onopen = () => {
@@ -111,7 +120,8 @@
         {/if}
       </div>
     </div>
-    <div class="left-card-list">
+
+    <!-- <div class="left-card-list">
       <h3>
         Beacon list
       </h3>
@@ -125,6 +135,19 @@
           </li>
         {/each}
       </ul>
+    </div> -->
+
+    <div class="dropdown-container">
+      <select class="beacon-dropdown" bind:value={chosenAgentID}>
+        <option value="None">Select a Beacon</option>
+        {#each allAgentId as agent}
+          <option value={agent}>{agent}</option>
+        {/each}
+      </select>
+      <div class="selected-beacon">
+        Active Beacon: {chosenAgentID}
+      </div>
     </div>
+  
   </div>
 </main>

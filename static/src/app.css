@@ -1,4 +1,6 @@
-/* Global Styles with terminal exceptions */
+/* ==================== */
+/* Global Styles        */
+/* ==================== */
 *:not(.xterm, .xterm *) {
   margin: 0;
   padding: 0;
@@ -10,10 +12,12 @@ body {
   background-color: #f4f4f4;
   color: #333;
   min-height: 100vh;
-  padding-top: 60px; /* Space for navbar */
+  padding-top: 60px;
 }
 
-/* Navbar */
+/* ==================== */
+/* Navigation           */
+/* ==================== */
 .navbar {
   background-color: #333;
   color: #fff;
@@ -26,6 +30,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .navbar a {
@@ -39,44 +44,49 @@ body {
   color: #ff6347;
 }
 
-/* Left card list */
-.left-card-list {
+/* ==================== */
+/* Beacon Selection     */
+/* ==================== */
+.dropdown-container {
   position: fixed;
-  bottom: 40px;
+  top: 80px; /* Changed from bottom to top */
   left: 40px;
   width: 375px;
-  height: calc(100vh - 140px);
-  background-color: #fff;
+  z-index: 1000;
+  background: white;
+  padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  overflow-y: auto;
-  z-index: 1000;
-  padding: 20px; /* Added padding for internal spacing */
 }
 
-.left-card-list h3 {
-  margin: 0 0 15px 0;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+.beacon-dropdown {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 15px;
 }
 
-.left-card-list h4 {
-  margin: 0 0 20px 0;
-  color: #666;
-  font-weight: normal;
+.beacon-dropdown:hover {
+  border-color: #04AA6D;
+  box-shadow: 0 2px 8px rgba(4, 170, 109, 0.1);
 }
 
-.left-card-list ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.selected-beacon {
+  padding: 12px;
+  background: #f8f8f8;
+  border-radius: 6px;
+  font-weight: bold;
+  text-align: center;
 }
 
-.left-card-list li {
-  margin-bottom: 10px;
-}
-
-/* Web card container */
+/* ==================== */
+/* Terminal Container   */
+/* ==================== */
 .web-card {
   position: fixed;
   bottom: 40px;
@@ -87,10 +97,9 @@ body {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
-  padding: 20px; /* Added padding for the card */
+  padding: 20px;
 }
 
-/* Web shell terminal */
 .web-shell {
   background-color: #1e1e1e;
   border-radius: 8px;
@@ -99,43 +108,9 @@ body {
   overflow: hidden;
 }
 
-/* Terminal styling */
-.terminal-container {
-  width: 100% !important;
-  height: 100% !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-.xterm, .xterm-viewport, .xterm-screen, .xterm-rows {
-  font-family: 'Consolas', 'Menlo', 'Courier New', monospace !important;
-  background-color: #1e1e1e !important;
-  height: 100% !important;
-  width: 100% !important;
-  padding: 15px !important;
-}
-
-/* Beacon button */
-.beacon-button {
-  background-color: #04AA6D;
-  border: none;
-  color: white;
-  padding: 12px 24px;
-  text-align: center;
-  text-decoration: none;
-  display: block;
-  width: 100%;
-  font-size: 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.beacon-button:hover {
-  background-color: #038a5a;
-}
-
-/* Error message styling */
+/* ==================== */
+/* Utilities            */
+/* ==================== */
 p[style*="color: red;"] {
   position: absolute;
   bottom: 10px;
@@ -144,4 +119,20 @@ p[style*="color: red;"] {
   padding: 8px 16px;
   border-radius: 4px;
   margin: 0;
+}
+
+/* ==================== */
+/* Scrollbars           */
+/* ==================== */
+.xterm-viewport::-webkit-scrollbar {
+  width: 8px;
+}
+
+.xterm-viewport::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.xterm-viewport::-webkit-scrollbar-thumb {
+  background: #666;
+  border-radius: 4px;
 }
