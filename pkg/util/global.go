@@ -5,6 +5,9 @@ import (
 	"time"
 )
 
+const BEACON_CALLBACK string = "beacon_callback"
+const BEACON_REGISTER string = "beacon_register"
+
 var (
 	Agents       = make(map[string]Agent)
 	Tasks        = make(map[string][]Task)
@@ -14,6 +17,7 @@ var (
 )
 
 type Agent struct {
+	Type     string    `json:"type"`
 	ID       string    `json:"id"`
 	Hostname string    `json:"hostname"`
 	IP       string    `json:"ip"`
@@ -26,6 +30,7 @@ type Task struct {
 }
 
 type Result struct {
+	Type    string `json:"type"`
 	AgentID string `json:"agent_id"`
 	TaskID  string `json:"task_id"`
 	Output  string `json:"output"`

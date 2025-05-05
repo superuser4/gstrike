@@ -59,14 +59,14 @@
       let parsed = JSON.parse(event.data);
       let type = parsed["type"];
 
-
       if (type == "beacon_callback") {
-        term.write(`\r\n${event.data}\r\n\n`);
-        term.write('GStrike > ');
-        term.write(inputBuffer);  // Restore current input
+        term.write(`\r\n[*] Beacon ${parsed["agent_id"]} called home: Task (${parsed["task_id"]}) executed\r\nOutput:\r\n${parsed["output"]}\r\n\n`);
       } else if (type == "beacon_register") {
-        allAgentId = [...allAgentId, parsed["agentID"]];
+        allAgentId = [...allAgentId, parsed["id"]];
+        term.write(`\r\n[*] New beacon registered: ${parsed["id"]}\r\n\n`);
       }
+      term.write('GStrike > ');
+      term.write(inputBuffer);
     };
 
     // cleanup / error
@@ -79,14 +79,23 @@
       isConnected = false;
     };
 
-    function taskCommand(command) {
-
+    function postTaskCommand(command) {
+      fetch("https://localhost:443/tasks", {
+        method: "POST",
+        body: JSON.stringify({
+          agent_id: chosenAgentID,
+          command: inputBuffer,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        }
+    });
     }
 
     term.onData((data) => {
       // send if EOL (Enter key)
       if (data === '\r') {
-        taskCommand(inputBuffer);
+        postTaskCommand(inputBuffer);
         term.write('\r\n');
         inputBuffer = '';
         term.write('GStrike > ');
@@ -120,22 +129,6 @@
         {/if}
       </div>
     </div>
-
-    <!-- <div class="left-card-list">
-      <h3>
-        Beacon list
-      </h3>
-      <h4>Selected Beacon: {chosenAgentID}</h4>
-      <ul>  
-        {#each allAgentId as agent}
-          <li>
-            <button class="beacon-button" on:click={chosenAgentID = agent}>
-              {agent}
-            </button>
-          </li>
-        {/each}
-      </ul>
-    </div> -->
 
     <div class="dropdown-container">
       <select class="beacon-dropdown" bind:value={chosenAgentID}>

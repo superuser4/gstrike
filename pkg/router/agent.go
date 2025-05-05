@@ -29,18 +29,9 @@ func RegisterAgentHandler(w http.ResponseWriter, r *http.Request) {
 
 	util.Agents[agent.ID] = agent
 
-	// Sending update to UI
-	type Payload struct {
-		Type    string `json:"type"`
-		AgentID string `json:"agentID"`
-	}
+	agent.Type = util.BEACON_REGISTER
 
-	msg := Payload{
-		Type:    "beacon_register",
-		AgentID: agent.ID,
-	}
-
-	relay.WSConn.WriteJSON(msg)
+	relay.WSConn.WriteJSON(agent)
 
 	// Sending UUID back to agent
 	w.Header().Set("Content-Type", "application/json")
@@ -60,8 +51,11 @@ func PostResultHandler(w http.ResponseWriter, r *http.Request) {
 	util.Mutex.Lock()
 	defer util.Mutex.Unlock()
 
+	result.Type = util.BEACON_CALLBACK
+
 	util.Results = append(util.Results, result)
-	// display the results to operator via websocket here?
+	relay.WSConn.WriteJSON(result)
+
 	w.WriteHeader(http.StatusCreated)
 }
 
