@@ -26,6 +26,7 @@ func RegisterAgentHandler(w http.ResponseWriter, r *http.Request) {
 
 	agent.ID = uuid.New().String()
 	agent.LastSeen = time.Now()
+	agent.ExternalIP = r.RemoteAddr
 
 	util.Agents[agent.ID] = agent
 

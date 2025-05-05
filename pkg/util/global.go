@@ -17,11 +17,11 @@ var (
 )
 
 type Agent struct {
-	Type     string    `json:"type"`
-	ID       string    `json:"id"`
-	Hostname string    `json:"hostname"`
-	IP       string    `json:"ip"`
-	LastSeen time.Time `json:"last_seen"`
+	Type       string    `json:"type"`
+	ID         string    `json:"id"`
+	Hostname   string    `json:"hostname"`
+	ExternalIP string    `json:"external_ip"`
+	LastSeen   time.Time `json:"last_seen"`
 }
 
 type Task struct {

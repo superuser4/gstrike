@@ -63,7 +63,7 @@
         term.write(`\r\n[*] Beacon ${parsed["agent_id"]} called home: Task (${parsed["task_id"]}) executed\r\nOutput:\r\n${parsed["output"]}\r\n\n`);
       } else if (type == "beacon_register") {
         allAgentId = [...allAgentId, parsed["id"]];
-        term.write(`\r\n[*] New beacon registered: ${parsed["id"]}\r\n\n`);
+        //term.write(`\r\n[*] New beacon registered: ${parsed["id"]}\r\n\n`);
       }
       term.write('GStrike > ');
       term.write(inputBuffer);
