@@ -129,7 +129,7 @@ func beacon(args []string) {
 		--			-----------		-----------			--------		--------		------		--		----		---		--------	---------	`)
 		for i := 0; i < len(core.Beacons); i++ {
 			c := core.Beacons[i]
-			fmt.Printf("%s		%s		%s		%s		%s		%s		%s		%s		%s		%s		%s\n", c.ID, c.ExternalIP, c.InternalIp, c.Hostname, c.Username, c.Domain, c.OS, c.Arch, c.PID, c.LastSeen, c.FirstSeen)
+			fmt.Printf("%s		%s		%s		%s		%s		%s		%s		%s		%d		%d		%d\n", c.ID, c.ExternalIP, c.InternalIp, c.Hostname, c.Username, c.Domain, c.OS, c.Arch, c.PID, c.LastSeen, c.FirstSeen)
 		}
 	}
 }
@@ -172,7 +172,7 @@ func jobs(args []string) {
 					fmt.Printf("%s Error while stopping listener <%s>: %v\n", util.PrintBad, c.ID, err)
 					return
 				}
-				fmt.Printf("%s Stopped listener %s\n", util.PrintStatus, stop)
+				fmt.Printf("%s Stopped listener %s\n", util.PrintStatus, *stop)
 			}
 		}
 	} else if *start != "" {
