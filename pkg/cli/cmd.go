@@ -7,6 +7,8 @@ import (
 	"gstrike/pkg/core"
 	"gstrike/pkg/util"
 	"os"
+	"strconv"
+	"strings"
 )
 
 func help() {
@@ -103,6 +105,7 @@ func https(args []string) {
 }
 
 func generate(args []string) {}
+
 func beacon(args []string) {
 	fs := flag.NewFlagSet("beacon", flag.ContinueOnError)
 	list := fs.Bool("list", false, "Lists all beacons")
@@ -124,15 +127,27 @@ func beacon(args []string) {
 	}
 
 	if *list {
-		fmt.Printf(`
-		ID			External IP		Internal IP			Hostname		Username		Domain		OS		Arch		PID		LastSeen	FirstSeen
-		--			-----------		-----------			--------		--------		------		--		----		---		--------	---------	`)
-		for i := 0; i < len(core.Beacons); i++ {
+		var list = []string{"ID", "External IP", "Internal IP", "Hostname", "Username", "Domain", "OS", "Arch", "PID", "LastSeen", "FirstSeen"}
+		ListDisplay(list)
+		for i := 0; i < len(list); i++ {
 			c := core.Beacons[i]
-			fmt.Printf("%s		%s		%s		%s		%s		%s		%s		%s		%d		%d		%d\n", c.ID, c.ExternalIP, c.InternalIp, c.Hostname, c.Username, c.Domain, c.OS, c.Arch, c.PID, c.LastSeen, c.FirstSeen)
+			fmt.Printf("%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t", c.ID, c.ExternalIP, c.InternalIp, c.Hostname, c.Username, c.Domain, c.OS, c.Arch, strconv.Itoa(c.PID), c.LastSeen, c.FirstSeen)
 		}
+		fmt.Printf("\n")
 	}
 }
+
+func ListDisplay(list []string) {
+	for i := 0; i < len(list); i++ {
+		fmt.Printf("%s\t\t", list[i])
+	}
+	fmt.Printf("\n")
+	for i := 0; i < len(list); i++ {
+		fmt.Printf("%s\t\t", strings.Repeat("-", len(list[i])))
+	}
+	fmt.Printf("\n")
+}
+
 func jobs(args []string) {
 	fs := flag.NewFlagSet("jobs", flag.ContinueOnError)
 	list := fs.Bool("list", false, "Lists all beacons")
@@ -154,10 +169,14 @@ func jobs(args []string) {
 		fs.Usage()
 		return
 	}
+
+	if *start == *stop {
+		fs.Usage()
+		return
+	}
+
 	if *list {
-		fmt.Println(`
-		Listeners				Port	Status
-		---------				----	------`)
+		ListDisplay([]string{"Listeners", "Port", "Status"})
 		for i := 0; i < len(comms.Listeners); i++ {
 			current := comms.Listeners[i]
 			fmt.Printf("%s		%d		%s\n", current.ID, current.Port, current.Status)
@@ -205,26 +224,29 @@ func tasks(args []string) {
 	}
 
 	if *list && *beacon == "" {
-		fmt.Printf(`
-		Task ID		Beacon ID		Command		Status		Created At		Finished At		Output
-		-------		---------		-------		------		----------		-----------		------`)
-		for i := 0; i < len(core.Beacons); i++ {
-			for j := 0; j < len(core.Beacons[i].Tasks); j++ {
-				c := core.Beacons[i].Tasks[j]
-				fmt.Printf("%s		%s		%s		%s		%s		%s		%s\n", c.TaskID, c.BeaconID, c.Command, c.Status, c.CreatedAt, c.FinishedAt, c.Output)
-			}
-		}
-	} else if !*list && *beacon != "" {
 		for i := 0; i < len(core.Beacons); i++ {
 			var c core.Beacon = core.Beacons[i]
+			ListDisplay([]string{"Task ID", "Command", "Status", "Created At", "Finished At", "Output"})
+
+			for j := 0; j < len(c.Tasks); j++ {
+				t := c.Tasks[j]
+				fmt.Printf("%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n", t.TaskID, t.Command, t.Status, t.CreatedAt, t.FinishedAt, t.Output)
+			}
+			fmt.Printf("\n")
+		}
+	} else if !*list && *beacon != "" {
+
+		for i := 0; i < len(core.Beacons); i++ {
+
+			var c core.Beacon = core.Beacons[i]
 			if c.ID == *beacon {
-				fmt.Printf(`
-				Task ID		Command		Status		Created At		Finished At		Output
-				-------		-------		------		----------		-----------		------`)
+				ListDisplay([]string{"Task ID", "Command", "Status", "Created At", "Finished At", "Output"})
+
 				for j := 0; j < len(c.Tasks); j++ {
 					t := core.Beacons[i].Tasks[j]
-					fmt.Printf("%s		%s		%s		%s		%s		%s\n", t.TaskID, t.Command, t.Status, t.CreatedAt, t.FinishedAt, t.Output)
+					fmt.Printf("%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n", t.TaskID, t.Command, t.Status, t.CreatedAt, t.FinishedAt, t.Output)
 				}
+				fmt.Printf("\n")
 				break
 			}
 		}

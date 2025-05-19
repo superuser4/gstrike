@@ -1,17 +1,12 @@
 package comms
 
 import (
-	"bytes"
 	"context"
-	"crypto/hmac"
-	"crypto/sha256"
 	"crypto/tls"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"gstrike/pkg/core"
 	"gstrike/pkg/util"
-	"io"
 	"net/http"
 	"strconv"
 	"time"
@@ -51,7 +46,7 @@ func (l *HttpsListener) Start() {
 	r := mux.NewRouter()
 	beaconApi := r.PathPrefix("/").Subrouter()
 
-	beaconApi.Use(BeaconHMACAuth)
+	//beaconApi.Use(BeaconHMACAuth)
 	beaconApi.HandleFunc("/register", RegisterBeaconHandler).Methods("POST")
 	beaconApi.HandleFunc("/tasks/{beaconId}", GetTasksHandler).Methods("GET")
 	beaconApi.HandleFunc("/results/{beaconId}", PostResultsHandler).Methods("POST")
@@ -85,33 +80,33 @@ func (l *HttpsListener) Stop() error {
 	return err
 }
 
-func BeaconHMACAuth(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		signature := r.Header.Get("X-Agent-Signature")
-		if signature == "" {
-			http.Error(w, "Missing signature", http.StatusUnauthorized)
-			return
-		}
+// func BeaconHMACAuth(next http.Handler) http.Handler {
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		signature := r.Header.Get("X-Agent-Signature")
+// 		if signature == "" {
+// 			http.Error(w, "Missing signature", http.StatusUnauthorized)
+// 			return
+// 		}
 
-		bodyBytes, err := io.ReadAll(r.Body)
-		if err != nil {
-			http.Error(w, "Error reading body", http.StatusBadRequest)
-			return
-		}
-		r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes)) // restore body
+// 		bodyBytes, err := io.ReadAll(r.Body)
+// 		if err != nil {
+// 			http.Error(w, "Error reading body", http.StatusBadRequest)
+// 			return
+// 		}
+// 		r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes)) // restore body
 
-		mac := hmac.New(sha256.New, []byte(SharedSecret))
-		mac.Write(bodyBytes)
-		expectedMAC := hex.EncodeToString(mac.Sum(nil))
+// 		mac := hmac.New(sha256.New, []byte(SharedSecret))
+// 		mac.Write(bodyBytes)
+// 		expectedMAC := hex.EncodeToString(mac.Sum(nil))
 
-		if !hmac.Equal([]byte(signature), []byte(expectedMAC)) {
-			http.Error(w, "Unauthorized (HMAC failed)", http.StatusUnauthorized)
-			return
-		}
+// 		if !hmac.Equal([]byte(signature), []byte(expectedMAC)) {
+// 			http.Error(w, "Unauthorized (HMAC failed)", http.StatusUnauthorized)
+// 			return
+// 		}
 
-		next.ServeHTTP(w, r)
-	})
-}
+// 		next.ServeHTTP(w, r)
+// 	})
+// }
 
 func RegisterBeaconHandler(w http.ResponseWriter, r *http.Request) {
 	var beacon core.Beacon
