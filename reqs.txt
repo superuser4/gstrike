@@ -1,2 +1,0 @@
-For Compiling beacon:
-mingw-w64

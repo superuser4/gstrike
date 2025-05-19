@@ -1,3 +1,5 @@
 /build/
 gstrike-beacon/
 make.sh
+*.sh
+*.txt
