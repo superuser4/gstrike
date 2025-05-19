@@ -47,7 +47,7 @@ func NewHttps(port int) HttpsListener {
 	return listener
 }
 
-func (l *HttpsListener) Start() {
+func (l *HttpsListener) Start() error {
 	r := mux.NewRouter()
 	beaconApi := r.PathPrefix("/").Subrouter()
 
@@ -67,12 +67,12 @@ func (l *HttpsListener) Start() {
 
 	err := l.Server.ListenAndServeTLS(l.CertFile, l.KeyFile)
 	if err != nil {
-		fmt.Printf("%sError when starting listener: %v\n", util.PrintBad, err)
-		return
+		return err
 	}
 	l.StartedAt = time.Now()
 	l.Status = "running"
 	fmt.Printf("%s [%s] Gstrike C2 Https server listening on https://localhost:%d\n", util.PrintGood, l.StartedAt, l.Port)
+	return err
 }
 
 func (l *HttpsListener) Stop() error {
@@ -126,7 +126,7 @@ func RegisterBeaconHandler(w http.ResponseWriter, r *http.Request) {
 	beacon.LastSeen = time.Now()
 	beacon.ExternalIP = r.RemoteAddr
 
-	core.Beacons[beacon.ID] = beacon
+	core.Beacons = append(core.Beacons, beacon)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(beacon)

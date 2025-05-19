@@ -12,10 +12,12 @@ type Beacon struct {
 	OS         string    `json:"os"`       // e.g. "windows", "linux"
 	Arch       string    `json:"arch"`     // .eg. "amd64", "arm64"
 	PID        int       `json:"pid"`      // process ID of the implant
+	InternalIp string    `json:"internal_ip"`
 	ExternalIP string    `json:"external_ip"`
 	LastSeen   time.Time `json:"last_seen"`  // RFC3339 timestamp
 	FirstSeen  time.Time `json:"first_seen"` // when the implant first checked in
+	Tasks      []Task
 }
 
-var Beacons = make(map[string]Beacon)
+var Beacons []Beacon
 var SelectedBeaconId = ""
