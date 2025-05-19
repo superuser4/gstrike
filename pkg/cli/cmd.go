@@ -160,7 +160,7 @@ func jobs(args []string) {
 		---------				----	------`)
 		for i := 0; i < len(comms.Listeners); i++ {
 			current := comms.Listeners[i]
-			fmt.Printf("%s	%d	%s\n", current.ID, current.Port, current.Status)
+			fmt.Printf("%s		%d		%s\n", current.ID, current.Port, current.Status)
 		}
 		fmt.Printf("\n\n")
 	} else if *stop != "" {
@@ -179,17 +179,13 @@ func jobs(args []string) {
 		for i := 0; i < len(comms.Listeners); i++ {
 			c := comms.Listeners[i]
 			if c.ID == *start {
-				err := c.Start()
-				if err != nil {
-					fmt.Printf("%s Error while starting listener <%s>: %v\n", util.PrintBad, c.ID, err)
-					return
-				}
+				go c.Start()
 			}
 		}
 	}
 }
 func tasks(args []string) {
-	fs := flag.NewFlagSet("jobs", flag.ContinueOnError)
+	fs := flag.NewFlagSet("tasks", flag.ContinueOnError)
 	beacon := fs.String("beacon", "", "Lists one beacon")
 	list := fs.Bool("list", false, "Lists all beacons")
 
