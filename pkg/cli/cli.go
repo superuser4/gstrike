@@ -74,6 +74,7 @@ func handleCmd(commands []string) {
 		update()
 	case "banner":
 		banner()
+
 	default:
 		fmt.Println(util.PrintBad + "Unknown command")
 	}

