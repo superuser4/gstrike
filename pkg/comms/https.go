@@ -61,7 +61,7 @@ func (l *HttpsListener) Start() {
 
 	l.StartedAt = time.Now()
 	l.Status = "running"
-	fmt.Printf("%s [%s] Gstrike C2 Https server listening on https://localhost:%d\n", util.PrintGood, l.StartedAt, l.Port)
+	fmt.Printf("\n%s [%s] Gstrike C2 Https server listening on https://localhost:%d\n", util.PrintGood, l.StartedAt, l.Port)
 	err := l.Server.ListenAndServeTLS(l.CertFile, l.KeyFile)
 	if err != nil {
 		fmt.Printf("%s Error while starting listener: %v\n", util.PrintBad, err)

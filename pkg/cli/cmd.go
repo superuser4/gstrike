@@ -70,10 +70,18 @@ func use(args []string) {
 	}
 
 	if *beacon != "" {
-		fmt.Printf("%s Beacon selected: %s\n", util.PrintStatus, *beacon)
-		core.SelectedBeaconId = *beacon
+		var exist bool
+		for i := 0; i < len(core.Beacons); i++ {
+			if core.Beacons[i].ID == *beacon {
+				exist = true
+				break
+			}
+		}
+		if exist {
+			fmt.Printf("%s Beacon selected: %s\n", util.PrintStatus, *beacon)
+			core.SelectedBeaconId = *beacon
+		}
 	}
-
 }
 func https(args []string) {
 	fs := flag.NewFlagSet("https", flag.ContinueOnError)
@@ -187,10 +195,15 @@ func jobs(args []string) {
 			fmt.Printf("%s		%d		%s\n", current.ID, current.Port, current.Status)
 		}
 		fmt.Printf("\n\n")
+
 	} else if *stop != "" {
 		for i := 0; i < len(comms.Listeners); i++ {
 			c := comms.Listeners[i]
 			if c.ID == *stop {
+				if c.Status == "stopped" {
+					fmt.Printf("%s Listener already at a stopped state\n", util.PrintBad)
+					return
+				}
 				err := c.Stop()
 				if err != nil {
 					fmt.Printf("%s Error while stopping listener <%s>: %v\n", util.PrintBad, c.ID, err)
@@ -201,6 +214,7 @@ func jobs(args []string) {
 			}
 		}
 		fmt.Printf("%s No such listener ID found...\n", util.PrintBad)
+
 	} else if *start != "" {
 		for i := 0; i < len(comms.Listeners); i++ {
 			c := comms.Listeners[i]
