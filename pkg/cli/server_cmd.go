@@ -11,7 +11,23 @@ import (
 	"strings"
 )
 
-func help() {
+// In cli/servercmds.go or wherever appropriate
+var ServerCommands = map[string]func([]string){
+	"help":     help,
+	"clear":    clear,
+	"exit":     ExitServer,
+	"use":      use,
+	"https":    https,
+	"generate": generate,
+	"beacon":   beacon,
+	"jobs":     jobs,
+	"tasks":    tasks,
+	"license":  license,
+	"update":   update,
+	"banner":   banner,
+}
+
+func help(args []string) {
 	var cmd string = `
 	Commands			Description
 	--------			-----------
@@ -31,11 +47,11 @@ func help() {
 	fmt.Println(cmd)
 }
 
-func clear() {
+func clear(args []string) {
 	fmt.Print("\033[H\033[2J")
 }
 
-func ExitServer() {
+func ExitServer(args []string) {
 	fmt.Printf("%s Running cleanup..\n", util.PrintStatus)
 
 	for i := 0; i < len(comms.Listeners); i++ {
@@ -121,7 +137,7 @@ func generate(args []string) {}
 
 func beacon(args []string) {
 	fs := flag.NewFlagSet("beacon", flag.ContinueOnError)
-	list := fs.Bool("list", false, "Lists all beacons")
+	list := fs.String("list", "", "Lists info about beacon(s)")
 
 	fs.Usage = func() {
 		fmt.Println()
@@ -139,15 +155,18 @@ func beacon(args []string) {
 		return
 	}
 
-	if *list {
-		var list = []string{"ID", "External IP", "Internal IP", "Hostname", "Username", "Domain", "OS", "Arch", "PID", "LastSeen", "FirstSeen"}
-		ListDisplay(list)
-		for i := 0; i < len(list); i++ {
-			c := core.Beacons[i]
-			fmt.Printf("%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t", c.ID, c.ExternalIP, c.InternalIp, c.Hostname, c.Username, c.Domain, c.OS, c.Arch, strconv.Itoa(c.PID), c.LastSeen, c.FirstSeen)
+	var lol = []string{"ID", "External IP", "Internal IP", "Hostname", "Username", "Domain", "OS", "Arch", "PID", "LastSeen", "FirstSeen"}
+	ListDisplay(lol)
+
+	for i := 0; i < len(core.Beacons); i++ {
+		c := core.Beacons[i]
+
+		if *list != "" && c.ID != *list {
+			continue
 		}
-		fmt.Printf("\n")
+		fmt.Printf("%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t", c.ID, c.ExternalIP, c.InternalIp, c.Hostname, c.Username, c.Domain, c.OS, c.Arch, strconv.Itoa(c.PID), c.LastSeen, c.FirstSeen)
 	}
+	fmt.Printf("\n")
 }
 
 func ListDisplay(list []string) {
@@ -274,7 +293,7 @@ func tasks(args []string) {
 	}
 }
 
-func license() {
+func license(args []string) {
 	var license string = `
 	Copyright (c) 2025 superuser4
 
@@ -294,7 +313,7 @@ func license() {
 	fmt.Println(license)
 }
 
-func update() {}
-func banner() {
+func update(args []string) {}
+func banner(args []string) {
 	fmt.Printf(util.BANNER + "\n\n")
 }

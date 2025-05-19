@@ -33,7 +33,7 @@ func Exec() {
 				fmt.Fprintf(os.Stderr, "%s IO Error: %v\n\n", util.PrintBad, err)
 			} else {
 				fmt.Printf("\n")
-				ExitServer()
+				ExitServer([]string{})
 			}
 			break
 		}
@@ -42,40 +42,22 @@ func Exec() {
 			continue
 		}
 		split := strings.Split(input, " ")
-		handleCmd(split)
+		if core.SelectedBeaconId == "" {
+			dispatchCmd(ServerCommands, split)
+		} else {
+			dispatchCmd(BeaconCommands, split)
+		}
 	}
 }
 
-func handleCmd(commands []string) {
-
-	cmd, args := commands[0], commands[1:]
-	switch cmd {
-	case "help":
-		help()
-	case "clear":
-		clear()
-	case "exit":
-		ExitServer()
-	case "use":
-		use(args)
-	case "https":
-		https(args)
-	case "generate":
-		generate(args)
-	case "beacon":
-		beacon(args)
-	case "jobs":
-		jobs(args)
-	case "tasks":
-		tasks(args)
-	case "license":
-		license()
-	case "update":
-		update()
-	case "banner":
-		banner()
-
-	default:
-		fmt.Println(util.PrintBad + "Unknown command")
+func dispatchCmd(cmdMap map[string]func([]string), input []string) {
+	if len(input) == 0 {
+		return
+	}
+	cmd, args := input[0], input[1:]
+	if handler, ok := cmdMap[cmd]; ok {
+		handler(args)
+	} else {
+		fmt.Println(util.PrintBad + "Unknown command...")
 	}
 }

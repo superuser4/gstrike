@@ -1,6 +1,12 @@
 package core
 
-import "time"
+import (
+	"fmt"
+	"gstrike/pkg/util"
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Task struct {
 	TaskID     string    `json:"id"`
@@ -14,7 +20,14 @@ type Task struct {
 
 var Tasks []Task
 
-func NewTask() Task {
-	t := Task{}
-	return t
+func NewTask(cmd string) {
+	t := Task{
+		TaskID:    uuid.NewString(),
+		BeaconID:  SelectedBeaconId,
+		Command:   cmd,
+		CreatedAt: time.Now(),
+		Status:    "pending",
+	}
+	Tasks = append(Tasks, t)
+	fmt.Printf("%s Queued new command '%s' for beacon: %s\n", util.PrintGood, cmd, t.BeaconID)
 }
