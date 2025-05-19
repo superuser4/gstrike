@@ -155,7 +155,7 @@ func ListDisplay(list []string) {
 
 func jobs(args []string) {
 	fs := flag.NewFlagSet("jobs", flag.ContinueOnError)
-	list := fs.Bool("list", false, "Lists all beacons")
+	list := fs.Bool("list", false, "Lists all listeners")
 	start := fs.String("start", "", "Starts configured listener")
 	stop := fs.String("stop", "", "Stops configured listener")
 
@@ -197,17 +197,22 @@ func jobs(args []string) {
 					return
 				}
 				fmt.Printf("%s Stopped listener %s\n", util.PrintStatus, *stop)
+				return
 			}
 		}
+		fmt.Printf("%s No such listener ID found...\n", util.PrintBad)
 	} else if *start != "" {
 		for i := 0; i < len(comms.Listeners); i++ {
 			c := comms.Listeners[i]
 			if c.ID == *start {
 				go c.Start()
+				return
 			}
 		}
+		fmt.Printf("%s No such listener ID found...\n", util.PrintBad)
 	}
 }
+
 func tasks(args []string) {
 	fs := flag.NewFlagSet("tasks", flag.ContinueOnError)
 	beacon := fs.String("beacon", "", "Lists one beacon")
@@ -252,9 +257,10 @@ func tasks(args []string) {
 					fmt.Printf("%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n", t.TaskID, t.Command, t.Status, t.CreatedAt, t.FinishedAt, t.Output)
 				}
 				fmt.Printf("\n")
-				break
+				return
 			}
 		}
+		fmt.Printf("%s No such beacon ID found...\n", util.PrintBad)
 	} else {
 		fs.Usage()
 		return
