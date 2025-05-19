@@ -16,7 +16,6 @@ type Beacon struct {
 	ExternalIP string    `json:"external_ip"`
 	LastSeen   time.Time `json:"last_seen"`  // RFC3339 timestamp
 	FirstSeen  time.Time `json:"first_seen"` // when the implant first checked in
-	Tasks      []Task
 }
 
 var Beacons []Beacon

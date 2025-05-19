@@ -248,33 +248,26 @@ func tasks(args []string) {
 	}
 
 	if *list && *beacon == "" {
-		for i := 0; i < len(core.Beacons); i++ {
-			var c core.Beacon = core.Beacons[i]
-			ListDisplay([]string{"Task ID", "Command", "Status", "Created At", "Finished At", "Output"})
+		ListDisplay([]string{"Task ID", "Beacon ID", "Command", "Status", "Created At", "Finished At", "Output"})
 
-			for j := 0; j < len(c.Tasks); j++ {
-				t := c.Tasks[j]
-				fmt.Printf("%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n", t.TaskID, t.Command, t.Status, t.CreatedAt, t.FinishedAt, t.Output)
-			}
-			fmt.Printf("\n")
+		for i := 0; i < len(core.Tasks); i++ {
+			t := core.Tasks[i]
+			fmt.Printf("%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n", t.TaskID, t.BeaconID, t.Command, t.Status, t.CreatedAt, t.FinishedAt, t.Output)
 		}
 	} else if !*list && *beacon != "" {
+		ListDisplay([]string{"Task ID", "Beacon ID", "Command", "Status", "Created At", "Finished At", "Output"})
+		var exist bool
 
-		for i := 0; i < len(core.Beacons); i++ {
-
-			var c core.Beacon = core.Beacons[i]
-			if c.ID == *beacon {
-				ListDisplay([]string{"Task ID", "Command", "Status", "Created At", "Finished At", "Output"})
-
-				for j := 0; j < len(c.Tasks); j++ {
-					t := core.Beacons[i].Tasks[j]
-					fmt.Printf("%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n", t.TaskID, t.Command, t.Status, t.CreatedAt, t.FinishedAt, t.Output)
-				}
-				fmt.Printf("\n")
-				return
+		for i := 0; i < len(core.Tasks); i++ {
+			t := core.Tasks[i]
+			if t.BeaconID == *beacon {
+				exist = true
+				fmt.Printf("%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n", t.TaskID, t.BeaconID, t.Command, t.Status, t.CreatedAt, t.FinishedAt, t.Output)
 			}
 		}
-		fmt.Printf("%s No such beacon ID found...\n", util.PrintBad)
+		if !exist {
+			fmt.Printf("%s No such beacon ID found...\n", util.PrintBad)
+		}
 	} else {
 		fs.Usage()
 		return

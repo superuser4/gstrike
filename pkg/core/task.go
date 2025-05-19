@@ -12,7 +12,7 @@ type Task struct {
 	Output     string    `json:"output"`
 }
 
-var Tasks = make(map[string][]Task)
+var Tasks []Task
 
 func NewTask() Task {
 	t := Task{}
