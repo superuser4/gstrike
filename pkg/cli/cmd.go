@@ -36,11 +36,15 @@ func clear() {
 }
 
 func ExitServer() {
+	fmt.Printf("%s Running cleanup..\n", util.PrintStatus)
+
 	for i := 0; i < len(comms.Listeners); i++ {
 		l := comms.Listeners[i]
 		err := l.Stop()
 		if err != nil {
 			fmt.Printf(util.PrintBad+"Error shutting down Https Listener: %v\n", err)
+		} else {
+			fmt.Printf("%s Shut down listener: %s\n", util.PrintGood, l.ID)
 		}
 	}
 	os.Exit(0)
@@ -66,6 +70,7 @@ func use(args []string) {
 	}
 
 	if *beacon != "" {
+		fmt.Printf("%s Beacon selected: %s\n", util.PrintStatus, *beacon)
 		core.SelectedBeaconId = *beacon
 	}
 
@@ -97,6 +102,7 @@ func https(args []string) {
 		return
 	}
 	listener := comms.NewHttps(*port)
+	fmt.Printf("%s New Https listener configured\n", util.PrintStatus)
 	if *startNow {
 		listener.Status = "running"
 		go listener.Start()
@@ -169,7 +175,7 @@ func jobs(args []string) {
 		return
 	}
 
-	if *start == *stop {
+	if *start != "" && *stop != "" && *start == *stop {
 		fs.Usage()
 		return
 	}
