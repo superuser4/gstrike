@@ -25,7 +25,6 @@ func help() {
 	jobs				Lists running listeners
 	tasks				Beacon Task manangement
 	license				Prints GStrike's license 
-	version				Display version information
 	update				Check for updates
 	banner				Displays GStrike banner
 	`
@@ -276,8 +275,7 @@ func license() {
 	fmt.Println(license)
 }
 
-func version() {}
-func update()  {}
+func update() {}
 func banner() {
 	fmt.Printf(util.BANNER + "\n\n")
 }

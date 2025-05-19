@@ -6,14 +6,35 @@ import (
 	"gstrike/pkg/core"
 	"gstrike/pkg/util"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 )
 
+func PrintPrompt() {
+	fmt.Printf("%s [%s] > ", util.PROMPT, core.SelectedBeaconId)
+}
+
 func Exec() {
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		for range sigCh {
+			fmt.Printf("\nUse 'exit' or Ctrl-D to exit GStrike\n\n")
+			PrintPrompt()
+		}
+	}()
+
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
-		fmt.Printf("%s [%s] > ", util.PROMPT, core.SelectedBeaconId)
+		PrintPrompt()
 		if !scanner.Scan() {
+			if err := scanner.Err(); err != nil {
+				fmt.Fprintf(os.Stderr, "%s IO Error: %v\n\n", util.PrintBad, err)
+			} else {
+				fmt.Printf("\n")
+				ExitServer()
+			}
 			break
 		}
 		input := scanner.Text()
@@ -49,8 +70,6 @@ func handleCmd(commands []string) {
 		tasks(args)
 	case "license":
 		license()
-	case "version":
-		version()
 	case "update":
 		update()
 	case "banner":
