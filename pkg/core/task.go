@@ -8,6 +8,15 @@ import (
 	"github.com/google/uuid"
 )
 
+// Task creation + results parsing and tasks updating
+
+// Use for both DB and in memory tasking? You can also write a mock Tasker for testing
+type Tasker interface {
+	CreateTask(agentID string, cmd string) (Task, error)
+	GetPendingTasks(agentID string) ([]Task, error)
+	MarkTaskComplete(taskID string) error
+}
+
 type Task struct {
 	TaskID     string    `json:"id"`
 	BeaconID   string    `json:"beaconID"`

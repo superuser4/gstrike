@@ -4,6 +4,8 @@ import (
 	"time"
 )
 
+// beacon handler
+
 type Beacon struct {
 	ID         string    `json:"id"` // unique agent/beacon ID
 	Hostname   string    `json:"hostname"`

@@ -3,15 +3,14 @@ package cli
 import (
 	"flag"
 	"fmt"
-	"gstrike/pkg/comms"
 	"gstrike/pkg/core"
+	"gstrike/pkg/core/comms"
 	"gstrike/pkg/util"
 	"os"
 	"strconv"
 	"strings"
 )
 
-// In cli/servercmds.go or wherever appropriate
 var ServerCommands = map[string]func([]string){
 	"help":     help,
 	"clear":    clear,
