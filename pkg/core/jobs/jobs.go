@@ -1,23 +1,23 @@
-package core
+package jobs
 
 import (
 	"fmt"
-	"gstrike/pkg/core/comms"
+	"gstrike/pkg/core/transport"
 	"gstrike/pkg/util"
 )
 
 func ListJobs() {
 	util.ListDisplay([]string{"Listeners", "Port", "Status"})
-	for i := 0; i < len(comms.Listeners); i++ {
-		current := comms.Listeners[i]
+	for i := 0; i < len(transport.Listeners); i++ {
+		current := transport.Listeners[i]
 		fmt.Printf("%s		%d		%s\n", current.ID, current.Port, current.Status)
 	}
 	fmt.Printf("\n\n")
 }
 
 func StopJob(stop *string) {
-	for i := 0; i < len(comms.Listeners); i++ {
-		c := comms.Listeners[i]
+	for i := 0; i < len(transport.Listeners); i++ {
+		c := transport.Listeners[i]
 		if c.ID == *stop {
 			if c.Status == "stopped" {
 				fmt.Printf("%s Listener already at a stopped state\n", util.PrintBad)
@@ -36,8 +36,8 @@ func StopJob(stop *string) {
 }
 
 func StartJob(start *string) {
-	for i := 0; i < len(comms.Listeners); i++ {
-		c := comms.Listeners[i]
+	for i := 0; i < len(transport.Listeners); i++ {
+		c := transport.Listeners[i]
 		if c.ID == *start {
 			go c.Start()
 			return

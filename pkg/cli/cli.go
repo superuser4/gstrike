@@ -3,7 +3,7 @@ package cli
 import (
 	"bufio"
 	"fmt"
-	"gstrike/pkg/core"
+	"gstrike/pkg/core/beaconmgr"
 	"gstrike/pkg/util"
 	"os"
 	"os/signal"
@@ -12,7 +12,7 @@ import (
 )
 
 func PrintPrompt() {
-	fmt.Printf("%s [%s] > ", util.PROMPT, core.SelectedBeaconId)
+	fmt.Printf("%s [%s] > ", util.PROMPT, beaconmgr.SelectedBeaconId)
 }
 
 func Exec() {
@@ -33,7 +33,7 @@ func Exec() {
 				fmt.Fprintf(os.Stderr, "%s IO Error: %v\n\n", util.PrintBad, err)
 			} else {
 				fmt.Printf("\n")
-				ExitServer([]string{})
+				ExitServer_cmd([]string{})
 			}
 			break
 		}
@@ -42,7 +42,7 @@ func Exec() {
 			continue
 		}
 		split := strings.Split(input, " ")
-		if core.SelectedBeaconId == "" {
+		if beaconmgr.SelectedBeaconId == "" {
 			dispatchCmd(ServerCommands, split)
 		} else {
 			dispatchCmd(BeaconCommands, split)

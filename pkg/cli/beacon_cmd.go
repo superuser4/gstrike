@@ -2,7 +2,8 @@ package cli
 
 import (
 	"fmt"
-	"gstrike/pkg/core"
+	"gstrike/pkg/core/beaconmgr"
+	"gstrike/pkg/core/taskmgr"
 	"strings"
 )
 
@@ -52,10 +53,10 @@ func helpBeacon(args []string) {
 }
 
 func back(args []string) {
-	core.ResetBeacon()
+	beaconmgr.ResetBeacon()
 }
 
 func shell(args []string) {
 	var cmd string = strings.Join(args, " ")
-	core.NewTask(cmd, core.SelectedBeaconId)
+	taskmgr.NewTask(cmd, beaconmgr.SelectedBeaconId)
 }

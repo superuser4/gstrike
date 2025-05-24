@@ -1,4 +1,4 @@
-package core
+package beaconmgr
 
 import (
 	"encoding/json"

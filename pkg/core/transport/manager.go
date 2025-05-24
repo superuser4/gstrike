@@ -1,4 +1,4 @@
-package comms
+package transport
 
 type Transport interface {
 	Start()
