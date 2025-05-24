@@ -29,10 +29,10 @@ type Task struct {
 
 var Tasks []Task
 
-func NewTask(cmd string) {
+func NewTask(cmd string, beacon string) {
 	t := Task{
 		TaskID:    uuid.NewString(),
-		BeaconID:  SelectedBeaconId,
+		BeaconID:  beacon,
 		Command:   cmd,
 		CreatedAt: time.Now(),
 		Status:    "pending",

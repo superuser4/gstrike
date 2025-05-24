@@ -48,13 +48,14 @@ func helpBeacon(args []string) {
 	banner				Displays GStrike banner
 	`
 	fmt.Println(cmd)
+	fmt.Printf("\n\n")
 }
 
 func back(args []string) {
-	core.SelectedBeaconId = ""
+	core.ResetBeacon()
 }
 
 func shell(args []string) {
 	var cmd string = strings.Join(args, " ")
-	core.NewTask(cmd)
+	core.NewTask(cmd, core.SelectedBeaconId)
 }

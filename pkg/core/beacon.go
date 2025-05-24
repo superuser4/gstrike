@@ -44,7 +44,7 @@ func NewBeacon(w http.ResponseWriter, r *http.Request) (Beacon, error) {
 	beacon.ExternalIP = r.RemoteAddr
 
 	Beacons = append(Beacons, beacon)
-	return Beacons[len(Beacons)], nil
+	return Beacons[len(Beacons)-1], nil
 }
 func UpdateBeacon() {}
 
@@ -77,4 +77,8 @@ func SelectBeacon(beacon *string) {
 			SelectedBeaconId = *beacon
 		}
 	}
+}
+
+func ResetBeacon() {
+	SelectedBeaconId = ""
 }
