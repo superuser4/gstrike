@@ -3,12 +3,13 @@ package cli
 import (
 	"bufio"
 	"fmt"
-	"gstrike/pkg/core/beaconmgr"
 	"gstrike/pkg/util"
 	"os"
 	"os/signal"
 	"strings"
 	"syscall"
+
+	"github.com/superuser4/c2core/beaconmgr"
 )
 
 func PrintPrompt() {

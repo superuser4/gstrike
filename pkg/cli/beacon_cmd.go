@@ -2,9 +2,10 @@ package cli
 
 import (
 	"fmt"
-	"gstrike/pkg/core/beaconmgr"
-	"gstrike/pkg/core/taskmgr"
 	"strings"
+
+	"github.com/superuser4/c2core/beaconmgr"
+	"github.com/superuser4/c2core/taskmgr"
 )
 
 var BeaconCommands = func() map[string]func([]string) {
