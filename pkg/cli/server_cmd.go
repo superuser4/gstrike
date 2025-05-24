@@ -7,8 +7,6 @@ import (
 	"gstrike/pkg/core/comms"
 	"gstrike/pkg/util"
 	"os"
-	"strconv"
-	"strings"
 )
 
 var ServerCommands = map[string]func([]string){
@@ -83,20 +81,8 @@ func use(args []string) {
 		fs.Usage()
 		return
 	}
+	core.SelectBeacon(beacon)
 
-	if *beacon != "" {
-		var exist bool
-		for i := 0; i < len(core.Beacons); i++ {
-			if core.Beacons[i].ID == *beacon {
-				exist = true
-				break
-			}
-		}
-		if exist {
-			fmt.Printf("%s Beacon selected: %s\n", util.PrintStatus, *beacon)
-			core.SelectedBeaconId = *beacon
-		}
-	}
 }
 func https(args []string) {
 	fs := flag.NewFlagSet("https", flag.ContinueOnError)
@@ -127,8 +113,7 @@ func https(args []string) {
 	listener := comms.NewHttps(*port)
 	fmt.Printf("%s New Https listener configured\n", util.PrintStatus)
 	if *startNow {
-		listener.Status = "running"
-		go listener.Start()
+		core.StartJob(&listener.ID)
 	}
 }
 
@@ -153,30 +138,7 @@ func beacon(args []string) {
 		fs.Usage()
 		return
 	}
-
-	var lol = []string{"ID", "External IP", "Internal IP", "Hostname", "Username", "Domain", "OS", "Arch", "PID", "LastSeen", "FirstSeen"}
-	ListDisplay(lol)
-
-	for i := 0; i < len(core.Beacons); i++ {
-		c := core.Beacons[i]
-
-		if *list != "" && c.ID != *list {
-			continue
-		}
-		fmt.Printf("%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t", c.ID, c.ExternalIP, c.InternalIp, c.Hostname, c.Username, c.Domain, c.OS, c.Arch, strconv.Itoa(c.PID), c.LastSeen, c.FirstSeen)
-	}
-	fmt.Printf("\n")
-}
-
-func ListDisplay(list []string) {
-	for i := 0; i < len(list); i++ {
-		fmt.Printf("%s\t\t", list[i])
-	}
-	fmt.Printf("\n")
-	for i := 0; i < len(list); i++ {
-		fmt.Printf("%s\t\t", strings.Repeat("-", len(list[i])))
-	}
-	fmt.Printf("\n")
+	core.ListBeacons(list)
 }
 
 func jobs(args []string) {
@@ -207,41 +169,11 @@ func jobs(args []string) {
 	}
 
 	if *list {
-		ListDisplay([]string{"Listeners", "Port", "Status"})
-		for i := 0; i < len(comms.Listeners); i++ {
-			current := comms.Listeners[i]
-			fmt.Printf("%s		%d		%s\n", current.ID, current.Port, current.Status)
-		}
-		fmt.Printf("\n\n")
-
+		core.ListJobs()
 	} else if *stop != "" {
-		for i := 0; i < len(comms.Listeners); i++ {
-			c := comms.Listeners[i]
-			if c.ID == *stop {
-				if c.Status == "stopped" {
-					fmt.Printf("%s Listener already at a stopped state\n", util.PrintBad)
-					return
-				}
-				err := c.Stop()
-				if err != nil {
-					fmt.Printf("%s Error while stopping listener <%s>: %v\n", util.PrintBad, c.ID, err)
-					return
-				}
-				fmt.Printf("%s Stopped listener %s\n", util.PrintStatus, *stop)
-				return
-			}
-		}
-		fmt.Printf("%s No such listener ID found...\n", util.PrintBad)
-
+		core.StopJob(stop)
 	} else if *start != "" {
-		for i := 0; i < len(comms.Listeners); i++ {
-			c := comms.Listeners[i]
-			if c.ID == *start {
-				go c.Start()
-				return
-			}
-		}
-		fmt.Printf("%s No such listener ID found...\n", util.PrintBad)
+		core.StartJob(start)
 	}
 }
 
@@ -266,26 +198,9 @@ func tasks(args []string) {
 	}
 
 	if *list && *beacon == "" {
-		ListDisplay([]string{"Task ID", "Beacon ID", "Command", "Status", "Created At", "Finished At", "Output"})
-
-		for i := 0; i < len(core.Tasks); i++ {
-			t := core.Tasks[i]
-			fmt.Printf("%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n", t.TaskID, t.BeaconID, t.Command, t.Status, t.CreatedAt, t.FinishedAt, t.Output)
-		}
+		core.PrintTasks()
 	} else if !*list && *beacon != "" {
-		ListDisplay([]string{"Task ID", "Beacon ID", "Command", "Status", "Created At", "Finished At", "Output"})
-		var exist bool
-
-		for i := 0; i < len(core.Tasks); i++ {
-			t := core.Tasks[i]
-			if t.BeaconID == *beacon {
-				exist = true
-				fmt.Printf("%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n", t.TaskID, t.BeaconID, t.Command, t.Status, t.CreatedAt, t.FinishedAt, t.Output)
-			}
-		}
-		if !exist {
-			fmt.Printf("%s No such beacon ID found...\n", util.PrintBad)
-		}
+		core.PrintTask(beacon)
 	} else {
 		fs.Usage()
 		return

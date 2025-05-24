@@ -11,5 +11,3 @@ type EventLog struct {
 	EventType   string    `json:"event_type"` // e.g. "login", "task_sent", "error"
 	Description string    `json:"description"`
 }
-
-func New() {}

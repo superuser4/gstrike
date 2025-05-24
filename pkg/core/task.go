@@ -40,3 +40,48 @@ func NewTask(cmd string) {
 	Tasks = append(Tasks, t)
 	fmt.Printf("%s Queued new command '%s' for beacon: %s\n", util.PrintGood, cmd, t.BeaconID)
 }
+
+func UpdateTask(res Task) {
+	for i := 0; i < len(Tasks); i++ {
+		if Tasks[i].TaskID == res.TaskID {
+			Tasks[i] = res
+			break
+		}
+	}
+}
+
+func NextTask(beaconId string) Task {
+	var next Task
+	for i := 0; i < len(Tasks); i++ {
+		if Tasks[i].BeaconID == beaconId && Tasks[i].Status == "pending" {
+			next = Tasks[i]
+			break
+		}
+	}
+	return next
+}
+
+func PrintTasks() {
+	util.ListDisplay([]string{"Task ID", "Beacon ID", "Command", "Status", "Created At", "Finished At", "Output"})
+
+	for i := 0; i < len(Tasks); i++ {
+		t := Tasks[i]
+		fmt.Printf("%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n", t.TaskID, t.BeaconID, t.Command, t.Status, t.CreatedAt, t.FinishedAt, t.Output)
+	}
+}
+
+func PrintTask(beacon *string) {
+	util.ListDisplay([]string{"Task ID", "Beacon ID", "Command", "Status", "Created At", "Finished At", "Output"})
+	var exist bool
+
+	for i := 0; i < len(Tasks); i++ {
+		t := Tasks[i]
+		if t.BeaconID == *beacon {
+			exist = true
+			fmt.Printf("%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n", t.TaskID, t.BeaconID, t.Command, t.Status, t.CreatedAt, t.FinishedAt, t.Output)
+		}
+	}
+	if !exist {
+		fmt.Printf("%s No such beacon ID found...\n", util.PrintBad)
+	}
+}
