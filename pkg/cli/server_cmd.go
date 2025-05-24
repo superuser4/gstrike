@@ -3,14 +3,13 @@ package cli
 import (
 	"flag"
 	"fmt"
-
+	"gstrike/pkg/core/beaconmgr"
+	"gstrike/pkg/core/jobs"
+	"gstrike/pkg/core/taskmgr"
+	"gstrike/pkg/core/transport"
 	"gstrike/pkg/util"
-	"os"
 
-	"github.com/superuser4/c2core/beaconmgr"
-	"github.com/superuser4/c2core/jobs"
-	"github.com/superuser4/c2core/taskmgr"
-	"github.com/superuser4/c2core/transport"
+	"os"
 )
 
 var ServerCommands = map[string]func([]string){

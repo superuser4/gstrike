@@ -2,3 +2,5 @@ github.com/gorilla/mux v1.8.1 h1:TuBL49tXwgrFYWhqrNgrUNEY92u81SPhu7sTdzQEiWY=
 github.com/gorilla/mux v1.8.1/go.mod h1:AKf9I4AEqPTmMytcMc0KkNouC66V3BtZ4qD5fmWSiMQ=
 github.com/superuser4/c2core v0.0.0-20250524182211-08c58bbbed7b h1:YT0IbJc1SK4qJ3aFbD9nwMr3Py32y4vxFZbAFv4EXzA=
 github.com/superuser4/c2core v0.0.0-20250524182211-08c58bbbed7b/go.mod h1:jQZggPjDIGpw1iOrmrQ2AGECFDo3tMoHut6RN6IjwTU=
+github.com/superuser4/gstrike v0.0.0-20250524183832-5e62d1ff0684 h1:mQxEMhkepAs4IW7jmcgUcy6Dow6+N2DU1eDsn+TfnMQ=
+github.com/superuser4/gstrike v0.0.0-20250524183832-5e62d1ff0684/go.mod h1:ucqZKb59gasZcDL93BXhAxMm8JF30tYvgatVCPe0Llc=
