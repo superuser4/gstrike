@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"gstrike/pkg/util"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 // Task creation + results parsing and tasks updating
@@ -30,8 +28,9 @@ type Task struct {
 var Tasks []Task
 
 func NewTask(cmd string, beacon string) {
+	id, _ := util.RandomString(10)
 	t := Task{
-		TaskID:    uuid.NewString(),
+		TaskID:    id,
 		BeaconID:  beacon,
 		Command:   cmd,
 		CreatedAt: time.Now(),

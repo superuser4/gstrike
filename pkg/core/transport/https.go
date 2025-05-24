@@ -12,7 +12,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 )
 
@@ -30,8 +29,9 @@ type HttpsListener struct {
 }
 
 func NewHttps(port int) HttpsListener {
+	id, _ := util.RandomString(10)
 	listener := HttpsListener{
-		ID:        uuid.NewString(),
+		ID:        id,
 		Port:      port,
 		CreatedAt: time.Now(),
 		CertFile:  "build/config/certs/server.crt",

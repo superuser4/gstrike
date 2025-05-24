@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 // beacon handler
@@ -38,7 +36,8 @@ func NewBeacon(w http.ResponseWriter, r *http.Request) (Beacon, error) {
 		return beacon, err
 	}
 
-	beacon.ID = uuid.New().String()
+	id, _ := util.RandomString(12)
+	beacon.ID = id
 	beacon.FirstSeen = time.Now()
 	beacon.LastSeen = time.Now()
 	beacon.ExternalIP = r.RemoteAddr
