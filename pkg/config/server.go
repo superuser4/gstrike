@@ -15,18 +15,18 @@ import (
 )
 
 type ServerConfig struct {
-	Port uint32	`json:"port"`
+	Port int `json:"port"`
 }
 
 const configPath = "./config/server.json"
 const CertPath = "./config/ssl/server.crt"
 const KeyPath = "./config/ssl/server.key"
-const defaultPort = 8080
+const DefaultPort = 443
 
 
 func createConfig() error {
 	
-	conf := ServerConfig{Port: defaultPort}
+	conf :=  ServerConfig{Port: DefaultPort}
 	confJson, err := json.MarshalIndent(conf,"","    ")
 	if err != nil {
 		return err
@@ -45,21 +45,21 @@ func createConfig() error {
 }
 
 
-func LoadConfig() (ServerConfig, error) {
-	var conf ServerConfig
+func LoadConfig() (*ServerConfig, error) {
+	var conf ServerConfig 
 	file, err := os.Open(configPath)
 	if err != nil {
 		fmt.Println(util.PrintStatus + "No server config file found, creating default...")
 		err1 := createConfig()
 		if err1 != nil {
-			return conf, err1
+			return &conf, err1
 		}
 	}
 	jsonParser := json.NewDecoder(file)
 	if err := jsonParser.Decode(&conf); err != nil {
-		return conf,err
+		return &conf,err
 	}
-	return conf,nil
+	return nil,nil
 }
 
 func CheckCert() error {

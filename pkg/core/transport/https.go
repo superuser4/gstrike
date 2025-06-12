@@ -26,8 +26,8 @@ const (
 
 type HttpsListener struct {
 	ID        string    // Unique identifier (e.g., UUID)
-	Port      int       // Port number
-	CreatedAt time.Time // When the listener was created
+	Port      int 
+	CreatedAt time.Time 
 	StartedAt time.Time
 	Status    status 
 	CertFile  string 
@@ -35,9 +35,12 @@ type HttpsListener struct {
 	Server    *http.Server
 }
 
-func NewHttps(port int) HttpsListener {
-	id, _ := util.RandomString(10)
-	
+func NewHttps(port int) (*HttpsListener, error) {
+	id, err := util.RandomString(10)
+	if err != nil {
+		return nil, err
+	}
+
 	listener := HttpsListener{
 		ID:        id,
 		Port:      port,
@@ -47,7 +50,7 @@ func NewHttps(port int) HttpsListener {
 	}
 	listener.Status = stopped
 	Listeners = append(Listeners, listener)
-	return Listeners[len(Listeners)-1]
+	return &Listeners[len(Listeners)-1], nil 
 }
 
 func (l *HttpsListener) Start() error {
@@ -109,7 +112,10 @@ func GetTask(w http.ResponseWriter, r *http.Request) {
 	next := taskmgr.NextTasks(beaconId)
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(next)
+	err := json.NewEncoder(w).Encode(next)
+	if err != nil {
+		return
+	}
 }
 
 func PostTask(w http.ResponseWriter, r *http.Request) {

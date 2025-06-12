@@ -1,11 +1,48 @@
 package transport
 
-type GstrikeServer struct {
-	Server HttpsListener	
+import (
+	"crypto/tls"
+	"gstrike/pkg/config"
+	"net/http"
+	"strconv"
+	"time"
+
+	"github.com/gorilla/mux"
+)
+
+
+type GStrikeServer struct {
+	Config config.ServerConfig
+	HttpServer *HttpsListener
 }
 
-
-func (g *GstrikeServer) Start() {
+func NewGStrike(conf config.ServerConfig) (*GStrikeServer, error) {
+	s, err := NewHttps(conf.Port)
+	if err != nil {
+		return nil, err
+	}
+	strike := GStrikeServer{Config: conf, HttpServer: s}
+	return &strike, nil
 }
 
-func (g *GstrikeServer) Stop() {}
+func (strike GStrikeServer) Start() error {	
+	tlsConfig := &tls.Config{
+		MinVersion: tls.VersionTLS12,
+	}
+	r := mux.NewRouter()
+	strike.HttpServer.Server = &http.Server{
+		Addr:      ":" + strconv.Itoa(strike.Config.Port),
+		Handler:   r,
+		TLSConfig: tlsConfig,
+	}
+
+	strike.HttpServer.StartedAt = time.Now()
+	strike.HttpServer.Status = running
+	err := strike.HttpServer.Server.ListenAndServeTLS(strike.HttpServer.CertFile, strike.HttpServer.KeyFile)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (strike GStrikeServer) Stop() {}
