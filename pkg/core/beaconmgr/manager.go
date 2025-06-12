@@ -2,13 +2,10 @@ package beaconmgr
 
 import (
 	"encoding/json"
-	"fmt"
 	"gstrike/pkg/util"
 	"net/http"
 	"time"
 )
-
-// beacon handler
 
 type Beacon struct {
 	ID         string    `json:"id"` // unique agent/beacon ID
@@ -29,8 +26,6 @@ var Beacons []Beacon
 func NewBeacon(w http.ResponseWriter, r *http.Request) (Beacon, error) {
 	var beacon Beacon
 	if err := json.NewDecoder(r.Body).Decode(&beacon); err != nil {
-		fmt.Printf("%s Json decode error: %v\n", util.PrintBad, err)
-		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return beacon, err
 	}
 
@@ -44,4 +39,3 @@ func NewBeacon(w http.ResponseWriter, r *http.Request) (Beacon, error) {
 	return Beacons[len(Beacons)-1], nil
 }
 
-func UpdateBeacon() {}

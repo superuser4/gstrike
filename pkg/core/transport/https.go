@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"gstrike/pkg/config"
 	"gstrike/pkg/core/beaconmgr"
 	"gstrike/pkg/core/taskmgr"
 	"gstrike/pkg/util"
@@ -36,12 +37,13 @@ type HttpsListener struct {
 
 func NewHttps(port int) HttpsListener {
 	id, _ := util.RandomString(10)
+	
 	listener := HttpsListener{
 		ID:        id,
 		Port:      port,
-		CreatedAt: time.Now(),
-		CertFile:  "build/config/certs/server.crt",
-		KeyFile:   "build/config/certs/server.key",
+		CreatedAt: time.Now(), w
+		CertFile:  ,
+		KeyFile:   ,
 	}
 	listener.Status = stopped
 	Listeners = append(Listeners, listener)

@@ -19,14 +19,41 @@ type ServerConfig struct {
 }
 
 const configPath = "./config/server.json"
-const certPath = "./config/ssl/server.crt"
-const keyPath = "./config/ssl/server.key"
+const CertPath = "./config/ssl/server.crt"
+const KeyPath = "./config/ssl/server.key"
+const defaultPort = 8080
+
+
+func createConfig() error {
+	
+	conf := ServerConfig{Port: defaultPort}
+	confJson, err := json.MarshalIndent(conf,"","    ")
+	if err != nil {
+		return err
+	}
+	file, err := os.Create(configPath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	
+	_, err1 := file.Write(confJson)
+	if err1 != nil {
+		return err
+	}
+	return nil
+}
+
 
 func LoadConfig() (ServerConfig, error) {
 	var conf ServerConfig
 	file, err := os.Open(configPath)
 	if err != nil {
-		return conf,err
+		fmt.Println(util.PrintStatus + "No server config file found, creating default...")
+		err1 := createConfig()
+		if err1 != nil {
+			return conf, err1
+		}
 	}
 	jsonParser := json.NewDecoder(file)
 	if err := jsonParser.Decode(&conf); err != nil {
@@ -36,8 +63,8 @@ func LoadConfig() (ServerConfig, error) {
 }
 
 func CheckCert() error {
-	_, err := os.Stat(keyPath)
-	_, err1 := os.Stat(certPath)
+	_, err := os.Stat(KeyPath)
+	_, err1 := os.Stat(CertPath)
 
 	if err != nil || err1 != nil {
 		err2 := CreateCerts()
@@ -78,7 +105,7 @@ func CreateCerts() error {
 		return nil
 	}
 
-	keyFile, err := os.Create(keyPath)
+	keyFile, err := os.Create(KeyPath)
 	if err != nil {
 		return err
 	}
@@ -88,7 +115,7 @@ func CreateCerts() error {
 		Bytes: x509.MarshalPKCS1PrivateKey(privateKey),
 	})
 
-	certFile, err := os.Create(certPath)
+	certFile, err := os.Create(CertPath)
 	if err != nil {
 		return err
 	}
