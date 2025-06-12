@@ -6,8 +6,8 @@ import (
 )
 
 type Tasker interface {
-	CreateTask(agentID string, cmd string) (Task, error)
-	GetPendingTasks(agentID string) ([]Task, error)
+	NewTask(cmd string, beaconId string) (Task, error)
+	NextTasks(beaconId string) ([]Task, error)
 	MarkTaskComplete(taskID string) error
 }
 type status int
@@ -30,7 +30,7 @@ type Task struct {
 
 var Tasks []Task
 
-func NewTask(cmd string, beacon string) error {
+func NewTask(cmd string, beaconId string) error {
 	id, err := util.RandomString(10)
 
 	if err != nil {
@@ -39,7 +39,7 @@ func NewTask(cmd string, beacon string) error {
 
 	t := Task{
 		TaskID:    id,
-		BeaconID:  beacon,
+		BeaconID:  beaconId,
 		Command:   cmd,
 		CreatedAt: time.Now(),
 		Status:    pending,
@@ -49,7 +49,7 @@ func NewTask(cmd string, beacon string) error {
 }
 
 func UpdateTask(res Task) {
-	for i := 0; i < len(Tasks); i++ {
+	for i:= range len(Tasks) {
 		if Tasks[i].TaskID == res.TaskID {
 			Tasks[i] = res
 			break
@@ -59,9 +59,9 @@ func UpdateTask(res Task) {
 
 func NextTasks(beaconId string) []Task {
 	var tasks []Task
-	for i := 0; i < len(Tasks); i++ {
-		if Tasks[i].BeaconID == beaconId {
-			tasks = Tasks[:i]
+	for i:= range len(Tasks) {
+		if Tasks[i].BeaconID == beaconId && Tasks[i].Status == pending {
+			tasks = append(tasks, Tasks[i])	
 		}
 	}
 	return tasks
