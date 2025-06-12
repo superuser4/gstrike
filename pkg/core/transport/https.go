@@ -29,9 +29,9 @@ type HttpsListener struct {
 	Port      int       // Port number
 	CreatedAt time.Time // When the listener was created
 	StartedAt time.Time
-	Status    status // Current status: "stopped", "running", "error", etc.
-	CertFile  string // Path to TLS cert file (if TLS enabled)
-	KeyFile   string // Path to TLS key file (if TLS enabled)
+	Status    status 
+	CertFile  string 
+	KeyFile   string 
 	Server    *http.Server
 }
 
@@ -41,9 +41,9 @@ func NewHttps(port int) HttpsListener {
 	listener := HttpsListener{
 		ID:        id,
 		Port:      port,
-		CreatedAt: time.Now(), w
-		CertFile:  ,
-		KeyFile:   ,
+		CreatedAt: time.Now(), 
+		CertFile:  config.CertPath,
+		KeyFile:   config.KeyPath,
 	}
 	listener.Status = stopped
 	Listeners = append(Listeners, listener)
@@ -56,7 +56,7 @@ func (l *HttpsListener) Start() error {
 
 	beaconApi.HandleFunc("/register", RegisterBeacon).Methods("POST")
 	beaconApi.HandleFunc("/tasks", GetTask).Methods("GET")
-	beaconApi.HandleFunc("/tasks/{id}", PostTask).Methods("POST")
+	beaconApi.HandleFunc("/tasks/{beaconId}", PostTask).Methods("POST")
 	beaconApi.HandleFunc("/results/{beaconId}", PostResults).Methods("POST")
 
 	tlsConfig := &tls.Config{

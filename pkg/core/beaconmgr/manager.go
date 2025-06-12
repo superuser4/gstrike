@@ -9,6 +9,7 @@ import (
 
 type Beacon struct {
 	ID         string    `json:"id"` // unique agent/beacon ID
+	Protocol   string    `json:"protocol"`
 	Hostname   string    `json:"hostname"`
 	Username   string    `json:"username"` // current user context
 	Domain     string    `json:"domain"`   // Active Directory domain, if any
