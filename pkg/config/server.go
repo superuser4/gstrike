@@ -44,16 +44,25 @@ func createConfig() error {
 	return nil
 }
 
-
 func LoadConfig() (*ServerConfig, error) {
 	var conf ServerConfig 
 	file, err := os.Open(configPath)
 	if err != nil {
-		fmt.Println(util.PrintStatus + "No server config file found, creating default...")
-		err1 := createConfig()
+		fmt.Println(util.PrintStatus + "No server config file found...")
+		_, err1 := os.Stat("./config")
 		if err1 != nil {
-			return &conf, err1
+			fmt.Println(util.PrintGood + "No config dir found, creating it...")
+			err2 := os.MkdirAll("./config", os.ModePerm)
+			if err2 != nil {
+				fmt.Println(util.PrintBad + "Error creating config directory, aborting..")
+				os.Exit(1)
+			}
 		}
+		err2 := createConfig()
+		if err2 != nil {
+			return &conf, err2
+		}
+		fmt.Println(util.PrintGood + "Created default server config file, this is where critical information about the C2 live")
 	}
 	jsonParser := json.NewDecoder(file)
 	if err := jsonParser.Decode(&conf); err != nil {

@@ -1,2 +1,1 @@
-go build ./pkg/* -o ./build/gstrike
-
+go build -o build/gstrike pkg/main.go

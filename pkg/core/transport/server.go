@@ -3,6 +3,7 @@ package transport
 import (
 	"crypto/tls"
 	"gstrike/pkg/config"
+	"gstrike/pkg/core/commgr"
 	"net/http"
 	"strconv"
 	"time"
@@ -26,10 +27,12 @@ func NewGStrike(conf config.ServerConfig) (*GStrikeServer, error) {
 }
 
 func (strike GStrikeServer) Start() error {	
+	r := mux.NewRouter()
+	r.HandleFunc("/ws", commgr.WsHandler)
+
 	tlsConfig := &tls.Config{
 		MinVersion: tls.VersionTLS12,
 	}
-	r := mux.NewRouter()
 	strike.HttpServer.Server = &http.Server{
 		Addr:      ":" + strconv.Itoa(strike.Config.Port),
 		Handler:   r,
@@ -45,4 +48,7 @@ func (strike GStrikeServer) Start() error {
 	return nil
 }
 
-func (strike GStrikeServer) Stop() {}
+func (strike GStrikeServer) Stop() error {
+	err := strike.HttpServer.Stop()
+	return err
+}

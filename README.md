@@ -1,2 +1,2 @@
 # gstrike
-Custom C2 Framework targeting Windows &amp; Linux.
+Custom C2 Framework, meant to be payload agnostic.
