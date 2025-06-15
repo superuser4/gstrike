@@ -1,4 +1,4 @@
-static GSTRIKE_BANNER: &str = 
+pub static GSTRIKE_BANNER: &str = 
 "
  ██████   ██████  ████████ ██████  ██ ██   ██ ███████ 
  ██       ██         ██    ██   ██ ██ ██  ██  ██      
